@@ -16,11 +16,5 @@
         { "key": "Cache-Control", "value": "s-maxage=300, stale-while-revalidate" }
       ]
     }
-  ],
-  "env": {
-    "AIRTABLE_TOKEN": "@airtable_token",
-    "AIRTABLE_BASE_ID": "@airtable_base_id",
-    "AIRTABLE_TABLE_VEILLE": "@airtable_table_veille",
-    "AIRTABLE_TABLE_CONCURRENTS": "@airtable_table_concurrents"
-  }
+  ]
 }
