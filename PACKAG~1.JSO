@@ -1,0 +1,9 @@
+{
+  "name": "kenzel-veille-alicante",
+  "version": "1.0.0",
+  "description": "Dashboard de veille concurrentielle — Centre de Formation Alicante — Bureau Kenzel",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

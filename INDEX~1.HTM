@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veille Concurrentielle — Alicante | Bureau Kenzel</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f1a;
+      --bg-card: #151829;
+      --bg-card-hover: #1c2035;
+      --border: #242840;
+      --border-light: #2e3358;
+      --text: #e8eaf6;
+      --text-muted: #7b82a8;
+      --text-dim: #4a5080;
+      --accent: #4f6ef7;
+      --accent-soft: rgba(79,110,247,0.12);
+      --green: #22c55e;
+      --green-soft: rgba(34,197,94,0.12);
+      --orange: #f59e0b;
+      --orange-soft: rgba(245,158,11,0.12);
+      --red: #ef4444;
+      --red-soft: rgba(239,68,68,0.12);
+      --pink: #ec4899;
+      --pink-soft: rgba(236,72,153,0.12);
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    html { font-size: 14px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #0d0f1a 0%, #131730 50%, #171b3a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 16px; color: white;
+    }
+    .brand { font-size: 15px; font-weight: 700; color: var(--text); }
+    .brand span { color: var(--text-muted); font-weight: 400; font-size: 13px; margin-left: 6px; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .badge-live {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--green-soft); border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge-live::before {
+      content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .last-updated { color: var(--text-dim); font-size: 11px; }
+    .btn-refresh {
+      background: var(--accent-soft); border: 1px solid rgba(79,110,247,0.25);
+      color: var(--accent); padding: 6px 14px; border-radius: var(--radius-sm);
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-refresh:hover { background: var(--accent); color: white; }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main { max-width: 1440px; margin: 0 auto; padding: 28px 32px; }
+
+    /* ===== WEEK SELECTOR ===== */
+    .week-bar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .week-bar label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .week-select {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text); padding: 7px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; cursor: pointer; min-width: 160px;
+    }
+    .week-select:focus { outline: none; border-color: var(--accent); }
+    .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+    .chip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-muted); padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .chip:hover, .chip.active { background: var(--accent-soft); border-color: rgba(79,110,247,0.4); color: var(--accent); }
+    .chip.source-ig.active { background: var(--pink-soft); border-color: rgba(236,72,153,0.4); color: var(--pink); }
+    .chip.source-fb.active { background: var(--accent-soft); border-color: rgba(79,110,247,0.4); color: var(--accent); }
+    .chip.source-web.active { background: var(--green-soft); border-color: rgba(34,197,94,0.4); color: var(--green); }
+
+    /* ===== STATS ROW ===== */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--border-light); }
+    .stat-number { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+    .stat-number.accent { color: var(--accent); }
+    .stat-number.green { color: var(--green); }
+    .stat-number.orange { color: var(--orange); }
+    .stat-number.red { color: var(--red); }
+    .stat-number.pink { color: var(--pink); }
+    .stat-label { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .stat-sub { color: var(--text-dim); font-size: 11px; margin-top: 4px; }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; margin-top: 8px;
+    }
+    .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .section-count { color: var(--text-muted); font-size: 12px; background: var(--bg-card); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+
+    /* ===== COMPETITOR GRID ===== */
+    .competitors-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px; margin-bottom: 36px;
+    }
+    .competitor-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; cursor: pointer;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .competitor-card:hover { border-color: var(--border-light); background: var(--bg-card-hover); transform: translateY(-1px); }
+    .competitor-card.has-changes { border-left: 3px solid var(--accent); }
+    .competitor-card.high-alert { border-left: 3px solid var(--red); }
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .card-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .card-sector { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .priority-dot.haute { background: var(--red); }
+    .priority-dot.moyenne { background: var(--orange); }
+    .priority-dot.basse { background: var(--green); }
+    .card-stats { display: flex; gap: 12px; margin-bottom: 14px; }
+    .card-stat { text-align: center; }
+    .card-stat-num { font-size: 20px; font-weight: 800; color: var(--accent); }
+    .card-stat-num.zero { color: var(--text-dim); }
+    .card-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.3px; }
+    .card-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .card-link {
+      font-size: 11px; padding: 3px 9px; border-radius: 6px; text-decoration: none;
+      transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .card-link.site { background: var(--green-soft); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+    .card-link.ig { background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(236,72,153,0.2); }
+    .card-link.fb { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(79,110,247,0.2); }
+    .card-link:hover { opacity: 0.8; }
+    .card-last-change {
+      margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text-muted);
+    }
+    .score-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+    }
+    .score-1,.score-2 { background: var(--green-soft); color: var(--green); }
+    .score-3 { background: var(--orange-soft); color: var(--orange); }
+    .score-4,.score-5 { background: var(--red-soft); color: var(--red); }
+
+    /* ===== VEILLE TABLE ===== */
+    .table-container {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 28px;
+    }
+    .table-toolbar {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .search-input {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 7px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; width: 240px; transition: border-color 0.2s;
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-dim); }
+    .type-select {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 7px 12px; border-radius: var(--radius-sm);
+      font-size: 12px; cursor: pointer;
+    }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      background: var(--bg); color: var(--text-muted); font-weight: 600;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td { padding: 12px 16px; border-bottom: 1px solid rgba(36,40,64,0.5); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(79,110,247,0.03); }
+    .td-source { white-space: nowrap; }
+    .source-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 6px;
+    }
+    .source-badge.Site\ Web { background: var(--green-soft); color: var(--green); }
+    .source-badge.Instagram { background: var(--pink-soft); color: var(--pink); }
+    .source-badge.Facebook { background: var(--accent-soft); color: var(--accent); }
+    .source-badge.Manuel { background: rgba(168,85,247,0.1); color: var(--purple); }
+    .type-badge {
+      display: inline-flex; align-items: center;
+      font-size: 11px; padding: 2px 8px; border-radius: 4px;
+      background: rgba(255,255,255,0.05); color: var(--text-muted); white-space: nowrap;
+    }
+    .type-badge.prix { background: var(--red-soft); color: var(--red); }
+    .type-badge.formation { background: var(--green-soft); color: var(--green); }
+    .type-badge.promo { background: var(--orange-soft); color: var(--orange); }
+    .td-content { max-width: 320px; }
+    .td-content p { color: var(--text); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .td-link a { color: var(--accent); font-size: 11px; text-decoration: none; }
+    .td-link a:hover { text-decoration: underline; }
+    .td-date { white-space: nowrap; color: var(--text-muted); font-size: 11px; }
+    .statut-badge {
+      font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600;
+    }
+    .statut-badge.Nouveau { background: var(--red-soft); color: var(--red); }
+    .statut-badge.Analysé { background: var(--orange-soft); color: var(--orange); }
+    .statut-badge.Archivé { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .empty-state p { font-size: 13px; }
+
+    /* ===== LOADING ===== */
+    .loading-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(13,15,26,0.7); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; z-index: 1000; flex-direction: column; gap: 16px;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 40px; height: 40px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--text-muted); font-size: 13px; }
+
+    /* ===== ERROR BANNER ===== */
+    .error-banner {
+      display: none; background: var(--red-soft); border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red); padding: 12px 20px; border-radius: var(--radius-sm);
+      margin-bottom: 20px; font-size: 13px;
+    }
+    .error-banner.active { display: block; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid var(--border); padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--text-dim); font-size: 11px;
+    }
+    .footer a { color: var(--text-muted); text-decoration: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header { padding: 0 16px; }
+      .main { padding: 16px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .competitors-grid { grid-template-columns: 1fr; }
+      .week-bar { flex-direction: column; align-items: flex-start; }
+      .filter-chips { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Chargement des données Airtable...</div>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">K</div>
+    <div>
+      <div class="brand">Veille Concurrentielle <span>Alicante</span></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-live">Live</div>
+    <div class="last-updated" id="lastUpdated">—</div>
+    <button class="btn-refresh" onclick="loadAll()">↻ Actualiser</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Error banner -->
+  <div class="error-banner" id="errorBanner"></div>
+
+  <!-- Week + Filters bar -->
+  <div class="week-bar">
+    <label>Semaine</label>
+    <select class="week-select" id="weekSelect" onchange="applyFilters()">
+      <option value="">Toutes les semaines</option>
+    </select>
+    <div class="filter-chips" id="sourceChips">
+      <div class="chip source-web" data-source="Site Web" onclick="toggleSource(this)">🌐 Site Web</div>
+      <div class="chip source-ig" data-source="Instagram" onclick="toggleSource(this)">📸 Instagram</div>
+      <div class="chip source-fb" data-source="Facebook" onclick="toggleSource(this)">👥 Facebook</div>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card">
+      <div class="stat-number accent" id="statTotal">—</div>
+      <div class="stat-label">Changements détectés</div>
+      <div class="stat-sub" id="statWeekLabel">cette semaine</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number red" id="statUrgents">—</div>
+      <div class="stat-label">Alertes prioritaires</div>
+      <div class="stat-sub">Score ≥ 4</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number green" id="statConcurrents">—</div>
+      <div class="stat-label">Concurrents surveillés</div>
+      <div class="stat-sub">actifs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number pink" id="statSocial">—</div>
+      <div class="stat-label">Posts réseaux sociaux</div>
+      <div class="stat-sub">Instagram + Facebook</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number orange" id="statNouveaux">—</div>
+      <div class="stat-label">En attente de traitement</div>
+      <div class="stat-sub">Statut "Nouveau"</div>
+    </div>
+  </div>
+
+  <!-- Competitor Cards -->
+  <div class="section-header">
+    <div class="section-title">Concurrents</div>
+    <div class="section-count" id="concCount">—</div>
+  </div>
+  <div class="competitors-grid" id="competitorsGrid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">📊</div>
+      <h3>Chargement en cours...</h3>
+    </div>
+  </div>
+
+  <!-- Veille Table -->
+  <div class="section-header">
+    <div class="section-title">Détail des changements détectés</div>
+    <div class="section-count" id="veilleCount">—</div>
+  </div>
+  <div class="table-container">
+    <div class="table-toolbar">
+      <input class="search-input" type="search" id="searchInput" placeholder="Rechercher un concurrent, contenu..." oninput="filterTable()" />
+      <select class="type-select" id="typeFilter" onchange="filterTable()">
+        <option value="">Tous les types</option>
+        <option>Nouveau prix</option>
+        <option>Nouvelle formation</option>
+        <option>Promotion / Offre</option>
+        <option>Modification contenu</option>
+        <option>Post réseau social</option>
+        <option>Avis client</option>
+        <option>Actualité / Événement</option>
+      </select>
+    </div>
+    <div class="table-scroll">
+      <table id="veilleTable">
+        <thead>
+          <tr>
+            <th>Concurrent</th>
+            <th>Source</th>
+            <th>Type</th>
+            <th>Contenu</th>
+            <th>Score</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Lien</th>
+          </tr>
+        </thead>
+        <tbody id="veilleBody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div>Bureau Kenzel · Dashboard Veille Concurrentielle Alicante</div>
+  <div>Données Airtable · N8N · Make · Claude AI</div>
+</footer>
+
+<script>
+  // ===== STATE =====
+  let state = {
+    concurrents: [],
+    veille: [],
+    allVeille: [],
+    semaineCourante: '',
+    selectedWeek: '',
+    selectedSource: null,
+    loading: false
+  };
+
+  // ===== UTILS =====
+  function formatDate(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('fr-FR', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    } catch { return iso; }
+  }
+
+  function getWeekLabel(iso) {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); }
+    catch { return iso; }
+  }
+
+  function showLoading(v) {
+    document.getElementById('loadingOverlay').classList.toggle('active', v);
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorBanner');
+    if (msg) { el.textContent = msg; el.classList.add('active'); }
+    else { el.classList.remove('active'); }
+  }
+
+  // ===== FETCH =====
+  async function fetchConcurrents() {
+    const res = await fetch('/api/concurrents');
+    if (!res.ok) throw new Error(`Concurrents: ${res.status}`);
+    return res.json();
+  }
+
+  async function fetchVeille(semaine = '') {
+    let url = '/api/veille?limit=200';
+    if (semaine) url += `&semaine=${encodeURIComponent(semaine)}`;
+    if (state.selectedSource) url += `&source=${encodeURIComponent(state.selectedSource)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Veille: ${res.status}`);
+    return res.json();
+  }
+
+  // ===== LOAD ALL =====
+  async function loadAll() {
+    showLoading(true);
+    showError('');
+    try {
+      const [concData, veilleData] = await Promise.all([
+        fetchConcurrents(),
+        fetchVeille(state.selectedWeek)
+      ]);
+
+      state.concurrents = concData.concurrents || [];
+      state.semaineCourante = concData.semaine_courante || '';
+      state.allVeille = veilleData.records || [];
+      state.veille = state.allVeille;
+
+      // Populate week selector
+      const weekSel = document.getElementById('weekSelect');
+      const semaines = veilleData.semaines_disponibles || [];
+      weekSel.innerHTML = '<option value="">Toutes les semaines</option>';
+      semaines.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s === state.semaineCourante ? `${s} (semaine courante)` : s;
+        if (s === state.semaineCourante && !state.selectedWeek) opt.selected = true;
+        weekSel.appendChild(opt);
+      });
+
+      if (!state.selectedWeek && semaines.includes(state.semaineCourante)) {
+        state.selectedWeek = state.semaineCourante;
+        weekSel.value = state.semaineCourante;
+        // Re-filter for current week
+        state.veille = state.allVeille.filter(r => r.fields['Semaine'] === state.semaineCourante);
+      }
+
+      // Update last updated
+      const now = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('lastUpdated').textContent = `Mis à jour à ${now}`;
+
+      renderStats(veilleData, state.veille);
+      renderConcurrents();
+      renderTable();
+
+    } catch (err) {
+      showError(`Erreur de chargement: ${err.message}. Vérifiez vos variables d'environnement Vercel (AIRTABLE_TOKEN, AIRTABLE_BASE_ID, etc.)`);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // ===== RENDER STATS =====
+  function renderStats(veilleData, filteredVeille) {
+    const stats = veilleData.stats || {};
+    document.getElementById('statTotal').textContent = filteredVeille.length;
+    document.getElementById('statUrgents').textContent = filteredVeille.filter(r => (r.fields['Score importance'] || 0) >= 4).length;
+    document.getElementById('statConcurrents').textContent = state.concurrents.length;
+    document.getElementById('statSocial').textContent = filteredVeille.filter(r => r.fields['Source'] === 'Instagram' || r.fields['Source'] === 'Facebook').length;
+    document.getElementById('statNouveaux').textContent = filteredVeille.filter(r => r.fields['Statut'] === 'Nouveau').length;
+    document.getElementById('statWeekLabel').textContent = state.selectedWeek ? `semaine ${state.selectedWeek}` : 'toutes semaines';
+  }
+
+  // ===== RENDER COMPETITORS =====
+  function renderConcurrents() {
+    const grid = document.getElementById('competitorsGrid');
+    document.getElementById('concCount').textContent = `${state.concurrents.length} actifs`;
+
+    if (!state.concurrents.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <div class="icon">🏫</div>
+        <h3>Aucun concurrent trouvé</h3>
+        <p>Vérifiez la table CONCURRENTS dans Airtable.</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = state.concurrents.map(c => {
+      const stats = c.stats || {};
+      const changes = stats.cette_semaine || 0;
+      const totalChanges = stats.total_changements || 0;
+      const scoreMax = stats.score_max || 0;
+      const hasChanges = changes > 0;
+      const highAlert = scoreMax >= 4;
+      const priorityClass = (c.priorite || 'Moyenne').toLowerCase().replace('é', 'e').replace('è', 'e');
+
+      return `<div class="competitor-card ${hasChanges ? 'has-changes' : ''} ${highAlert ? 'high-alert' : ''}">
+        <div class="card-header">
+          <div>
+            <div class="card-name">${c.nom}</div>
+            <div class="card-sector">${c.secteur}</div>
+          </div>
+          <div class="priority-dot ${priorityClass}" title="Priorité ${c.priorite}"></div>
+        </div>
+        <div class="card-stats">
+          <div class="card-stat">
+            <div class="card-stat-num ${changes === 0 ? 'zero' : ''}">${changes}</div>
+            <div class="card-stat-label">Cette sem.</div>
+          </div>
+          <div class="card-stat">
+            <div class="card-stat-num ${totalChanges === 0 ? 'zero' : ''}">${totalChanges}</div>
+            <div class="card-stat-label">Total</div>
+          </div>
+          ${scoreMax > 0 ? `<div class="card-stat">
+            <div class="score-badge score-${scoreMax}" style="margin-top:2px">⚡ ${scoreMax}/5</div>
+          </div>` : ''}
+        </div>
+        <div class="card-links">
+          ${c.site_web ? `<a class="card-link site" href="${c.site_web}" target="_blank">🌐 Site</a>` : ''}
+          ${c.instagram ? `<a class="card-link ig" href="https://instagram.com/${c.instagram}" target="_blank">📸 @${c.instagram}</a>` : ''}
+          ${c.facebook ? `<a class="card-link fb" href="${c.facebook}" target="_blank">👥 Page</a>` : ''}
+        </div>
+        ${stats.derniere_detection ? `<div class="card-last-change">
+          Dernier changement: ${getWeekLabel(stats.derniere_detection)}
+        </div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // ===== RENDER TABLE =====
+  function renderTable() {
+    const tbody = document.getElementById('veilleBody');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const typeFilter = document.getElementById('typeFilter').value;
+
+    let rows = state.veille;
+
+    if (search) {
+      rows = rows.filter(r => {
+        const nom = (Array.isArray(r.fields['Nom concurrent (lookup)']) ? r.fields['Nom concurrent (lookup)'][0] : r.fields['Nom concurrent (lookup)']) || '';
+        const contenu = r.fields['Contenu détecté'] || '';
+        return (nom + contenu).toLowerCase().includes(search);
+      });
+    }
+    if (typeFilter) {
+      rows = rows.filter(r => r.fields['Type de changement'] === typeFilter);
+    }
+
+    document.getElementById('veilleCount').textContent = `${rows.length} entrée${rows.length > 1 ? 's' : ''}`;
+
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="8">
+        <div class="empty-state">
+          <div class="icon">🔍</div>
+          <h3>Aucun résultat</h3>
+          <p>Aucun changement détecté pour ces critères.</p>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+      const f = r.fields;
+      const nom = Array.isArray(f['Nom concurrent (lookup)']) ? f['Nom concurrent (lookup)'][0] : (f['Nom concurrent (lookup)'] || '—');
+      const source = f['Source'] || '';
+      const type = f['Type de changement'] || '';
+      const contenu = f['Contenu détecté'] || '';
+      const score = f['Score importance'] || 0;
+      const statut = f['Statut'] || '';
+      const date = f['Date détection'] || '';
+      const lien = f['Lien source'] || '';
+
+      const typeClass = type.toLowerCase().includes('prix') ? 'prix' : type.toLowerCase().includes('formation') ? 'formation' : type.toLowerCase().includes('promo') ? 'promo' : '';
+
+      return `<tr>
+        <td><strong>${nom}</strong><br><span style="color:var(--text-muted);font-size:11px">${Array.isArray(f['Secteur (lookup)']) ? f['Secteur (lookup)'][0] : (f['Secteur (lookup)'] || '')}</span></td>
+        <td class="td-source"><span class="source-badge ${source}">${source}</span></td>
+        <td><span class="type-badge ${typeClass}">${type}</span></td>
+        <td class="td-content"><p>${contenu.replace(/\n/g, '<br>')}</p></td>
+        <td><span class="score-badge score-${score}">⚡ ${score}/5</span></td>
+        <td><span class="statut-badge ${statut}">${statut}</span></td>
+        <td class="td-date">${formatDate(date)}</td>
+        <td class="td-link">${lien ? `<a href="${lien}" target="_blank">↗ Voir</a>` : '—'}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ===== FILTERS =====
+  function applyFilters() {
+    state.selectedWeek = document.getElementById('weekSelect').value;
+    const allRecords = state.allVeille;
+    if (state.selectedWeek) {
+      state.veille = allRecords.filter(r => r.fields['Semaine'] === state.selectedWeek);
+    } else {
+      state.veille = allRecords;
+    }
+
+    // Update stats
+    const filteredStats = {
+      stats: {
+        urgents: state.veille.filter(r => (r.fields['Score importance'] || 0) >= 4).length,
+        nouveaux: state.veille.filter(r => r.fields['Statut'] === 'Nouveau').length,
+        instagram: state.veille.filter(r => r.fields['Source'] === 'Instagram').length,
+        facebook: state.veille.filter(r => r.fields['Source'] === 'Facebook').length
+      }
+    };
+
+    renderStats(filteredStats, state.veille);
+    renderTable();
+  }
+
+  function toggleSource(chip) {
+    const source = chip.dataset.source;
+    if (state.selectedSource === source) {
+      state.selectedSource = null;
+      chip.classList.remove('active');
+    } else {
+      document.querySelectorAll('.chip[data-source]').forEach(c => c.classList.remove('active'));
+      state.selectedSource = source;
+      chip.classList.add('active');
+    }
+    // Re-filter table
+    if (state.selectedSource) {
+      state.veille = state.allVeille.filter(r => {
+        const weekMatch = !state.selectedWeek || r.fields['Semaine'] === state.selectedWeek;
+        const sourceMatch = r.fields['Source'] === state.selectedSource;
+        return weekMatch && sourceMatch;
+      });
+    } else {
+      state.veille = state.allVeille.filter(r => !state.selectedWeek || r.fields['Semaine'] === state.selectedWeek);
+    }
+    renderStats({stats:{}}, state.veille);
+    renderTable();
+  }
+
+  function filterTable() { renderTable(); }
+
+  // ===== INIT =====
+  loadAll();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "name": "kenzel-veille-alicante",
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        { "key": "Cache-Control", "value": "s-maxage=300, stale-while-revalidate" }
+      ]
+    }
+  ],
+  "env": {
+    "AIRTABLE_TOKEN": "@airtable_token",
+    "AIRTABLE_BASE_ID": "@airtable_base_id",
+    "AIRTABLE_TABLE_VEILLE": "@airtable_table_veille",
+    "AIRTABLE_TABLE_CONCURRENTS": "@airtable_table_concurrents"
+  }
+}

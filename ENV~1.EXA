@@ -1,0 +1,8 @@
+# Variables d'environnement — Dashboard Kenzel Veille
+# Copier ce fichier en .env.local pour développement local
+# Sur Vercel : Settings → Environment Variables
+
+AIRTABLE_TOKEN=patXXXXXXXXXXXXXXXXXX
+AIRTABLE_BASE_ID=appXXXXXXXXXXXXXX
+AIRTABLE_TABLE_VEILLE=tblXXXXXXXXXXXXXX
+AIRTABLE_TABLE_CONCURRENTS=tblXXXXXXXXXXXXXX
