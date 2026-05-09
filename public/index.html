@@ -510,11 +510,14 @@
         weekSel.appendChild(opt);
       });
 
-      if (!state.selectedWeek && semaines.includes(state.semaineCourante)) {
-        state.selectedWeek = state.semaineCourante;
-        weekSel.value = state.semaineCourante;
-        // Re-filter for current week
-        state.veille = state.allVeille.filter(r => r.fields['Semaine'] === state.semaineCourante);
+      if (!state.selectedWeek) {
+        // Auto-select current week if available, otherwise the most recent week with data
+        const defaultWeek = semaines.includes(state.semaineCourante) ? state.semaineCourante : (semaines[0] || '');
+        if (defaultWeek) {
+          state.selectedWeek = defaultWeek;
+          weekSel.value = defaultWeek;
+          state.veille = state.allVeille.filter(r => r.fields['Semaine'] === defaultWeek);
+        }
       }
 
       // Update last updated
@@ -609,7 +612,7 @@
 
     if (search) {
       rows = rows.filter(r => {
-        const nom = (Array.isArray(r.fields['Nom concurrent (lookup)']) ? r.fields['Nom concurrent (lookup)'][0] : r.fields['Nom concurrent (lookup)']) || '';
+        const nom = r.fields['Titre'] || r.fields.titre || '';
         const contenu = r.fields['Contenu détecté'] || '';
         return (nom + contenu).toLowerCase().includes(search);
       });
@@ -633,7 +636,13 @@
 
     tbody.innerHTML = rows.map(r => {
       const f = r.fields;
-      const nom = Array.isArray(f['Nom concurrent (lookup)']) ? f['Nom concurrent (lookup)'][0] : (f['Nom concurrent (lookup)'] || '—');
+      // "Titre" = nom_concurrent + semaine (ex: "Air Hostess Alicante - 2026-W19")
+      const titre = f['Titre'] || f.titre || '—';
+      const nom = titre.split(' - ')[0] || titre; // Extraire juste le nom concurrent
+      // Chercher le secteur dans la liste des concurrents chargés
+      const concurrentNom = f.concurrent || (Array.isArray(f['Concurrent']) ? f['Concurrent'].map(c => c.name).join(', ') : '');
+      const concObj = state.concurrents.find(c => c.nom === concurrentNom || titre.startsWith(c.nom));
+      const secteur = concObj ? concObj.secteur : '';
       const source = f['Source'] || '';
       const type = f['Type de changement'] || '';
       const contenu = f['Contenu détecté'] || '';
@@ -645,7 +654,7 @@
       const typeClass = type.toLowerCase().includes('prix') ? 'prix' : type.toLowerCase().includes('formation') ? 'formation' : type.toLowerCase().includes('promo') ? 'promo' : '';
 
       return `<tr>
-        <td><strong>${nom}</strong><br><span style="color:var(--text-muted);font-size:11px">${Array.isArray(f['Secteur (lookup)']) ? f['Secteur (lookup)'][0] : (f['Secteur (lookup)'] || '')}</span></td>
+        <td><strong>${nom}</strong><br><span style="color:var(--text-muted);font-size:11px">${secteur}</span></td>
         <td class="td-source"><span class="source-badge ${source}">${source}</span></td>
         <td><span class="type-badge ${typeClass}">${type}</span></td>
         <td class="td-content"><p>${contenu.replace(/\n/g, '<br>')}</p></td>
