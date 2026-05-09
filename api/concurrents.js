@@ -2,9 +2,9 @@
 // Retourne la liste des concurrents avec leurs statistiques de veille
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  if (req.method === 'OPTIONS') return res.status(200).end();
 
   const {
     AIRTABLE_TOKEN,
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer les concurrents
+    // Récupérer les concurrents (pas de champs dupliqués ici)
     const concParams = new URLSearchParams({
       'filterByFormula': '{Actif}=1',
       'sort[0][field]': 'Priorité',
@@ -42,17 +42,18 @@ export default async function handler(req, res) {
     const weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
     const semaineCourante = `${now.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 
-    // Récupérer les stats de veille des 4 dernières semaines
+    // Récupérer les stats de veille — CORRECTION : utiliser .append() pour champs multiples
     let veilleStats = {};
     if (AIRTABLE_TABLE_VEILLE) {
-      const veilleParams = new URLSearchParams({
-        'fields[]': 'Nom concurrent (lookup)',
-        'fields[]': 'Semaine',
-        'fields[]': 'Score importance',
-        'fields[]': 'Statut',
-        'fields[]': 'Date détection',
-        'maxRecords': '200'
-      });
+      const veilleParams = new URLSearchParams();
+      veilleParams.append('maxRecords', '200');
+      // Champs réels dans VEILLE_HEBDO
+      veilleParams.append('fields[]', 'Titre');
+      veilleParams.append('fields[]', 'Concurrent');
+      veilleParams.append('fields[]', 'Semaine');
+      veilleParams.append('fields[]', 'Score importance');
+      veilleParams.append('fields[]', 'Statut');
+      veilleParams.append('fields[]', 'Date détection');
 
       const veilleUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_VEILLE}?${veilleParams}`;
       const veilleResponse = await fetch(veilleUrl, {
@@ -62,28 +63,33 @@ export default async function handler(req, res) {
       if (veilleResponse.ok) {
         const veilleData = await veilleResponse.json();
         for (const rec of (veilleData.records || [])) {
-          const nom = rec.fields['Nom concurrent (lookup)'];
-          if (!nom) continue;
-          const nomKey = Array.isArray(nom) ? nom[0] : nom;
-          if (!veilleStats[nomKey]) {
-            veilleStats[nomKey] = {
-              total_changements: 0,
-              cette_semaine: 0,
-              score_max: 0,
-              derniere_detection: null
-            };
-          }
-          veilleStats[nomKey].total_changements++;
-          if (rec.fields['Semaine'] === semaineCourante) {
-            veilleStats[nomKey].cette_semaine++;
-          }
-          const score = rec.fields['Score importance'] || 0;
-          if (score > veilleStats[nomKey].score_max) {
-            veilleStats[nomKey].score_max = score;
-          }
-          const dateDetection = rec.fields['Date détection'];
-          if (dateDetection && (!veilleStats[nomKey].derniere_detection || dateDetection > veilleStats[nomKey].derniere_detection)) {
-            veilleStats[nomKey].derniere_detection = dateDetection;
+          // "Concurrent" est un champ linked records → array [{id, name}]
+          const concurrentLinks = rec.fields['Concurrent'];
+          if (!concurrentLinks || !Array.isArray(concurrentLinks)) continue;
+
+          for (const link of concurrentLinks) {
+            const nomKey = link.name || link;
+            if (!nomKey) continue;
+            if (!veilleStats[nomKey]) {
+              veilleStats[nomKey] = {
+                total_changements: 0,
+                cette_semaine: 0,
+                score_max: 0,
+                derniere_detection: null
+              };
+            }
+            veilleStats[nomKey].total_changements++;
+            if (rec.fields['Semaine'] === semaineCourante) {
+              veilleStats[nomKey].cette_semaine++;
+            }
+            const score = rec.fields['Score importance'] || 0;
+            if (score > veilleStats[nomKey].score_max) {
+              veilleStats[nomKey].score_max = score;
+            }
+            const dateDetection = rec.fields['Date détection'];
+            if (dateDetection && (!veilleStats[nomKey].derniere_detection || dateDetection > veilleStats[nomKey].derniere_detection)) {
+              veilleStats[nomKey].derniere_detection = dateDetection;
+            }
           }
         }
       }
@@ -107,7 +113,7 @@ export default async function handler(req, res) {
       }
     }));
 
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     return res.status(200).json({
       concurrents: enriched,
       total: enriched.length,
