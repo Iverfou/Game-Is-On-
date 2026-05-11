@@ -1,724 +1,749 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Veille Concurrentielle — Alicante | Bureau Kenzel</title>
-  <style>
-    /* ===== RESET & BASE ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0d0f1a;
-      --bg-card: #151829;
-      --bg-card-hover: #1c2035;
-      --border: #242840;
-      --border-light: #2e3358;
-      --text: #e8eaf6;
-      --text-muted: #7b82a8;
-      --text-dim: #4a5080;
-      --accent: #4f6ef7;
-      --accent-soft: rgba(79,110,247,0.12);
-      --green: #22c55e;
-      --green-soft: rgba(34,197,94,0.12);
-      --orange: #f59e0b;
-      --orange-soft: rgba(245,158,11,0.12);
-      --red: #ef4444;
-      --red-soft: rgba(239,68,68,0.12);
-      --pink: #ec4899;
-      --pink-soft: rgba(236,72,153,0.12);
-      --purple: #a855f7;
-      --cyan: #06b6d4;
-      --radius: 12px;
-      --radius-sm: 8px;
-    }
-    html { font-size: 14px; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESATUR — Vigilancia Competitiva Alicante</title>
+<style>
+  :root {
+    --navy: #0f2342;
+    --blue: #1a4fa0;
+    --accent: #e63946;
+    --gold: #f4a261;
+    --green: #2a9d8f;
+    --light: #f8fafc;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --card-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; color: var(--text); }
 
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 100%);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 42px; height: 42px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: var(--navy); }
+  .header h1 { color: white; font-size: 18px; font-weight: 700; }
+  .header .sub { color: #94a3b8; font-size: 13px; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .live-badge { background: var(--green); color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: .5px; }
+  .btn { background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.25); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .btn:hover { background: rgba(255,255,255,.25); }
+  .last-update { color: #94a3b8; font-size: 12px; }
 
-    /* ===== HEADER ===== */
-    .header {
-      background: linear-gradient(135deg, #0d0f1a 0%, #131730 50%, #171b3a 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-    }
-    .header-left { display: flex; align-items: center; gap: 16px; }
-    .logo {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 16px; color: white;
-    }
-    .brand { font-size: 15px; font-weight: 700; color: var(--text); }
-    .brand span { color: var(--text-muted); font-weight: 400; font-size: 13px; margin-left: 6px; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    .badge-live {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--green-soft); border: 1px solid rgba(34,197,94,0.25);
-      color: var(--green); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-    }
-    .badge-live::before {
-      content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .last-updated { color: var(--text-dim); font-size: 11px; }
-    .btn-refresh {
-      background: var(--accent-soft); border: 1px solid rgba(79,110,247,0.25);
-      color: var(--accent); padding: 6px 14px; border-radius: var(--radius-sm);
-      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
-    .btn-refresh:hover { background: var(--accent); color: white; }
+  /* FILTERS */
+  .filters { background: white; border-bottom: 1px solid var(--border); padding: 12px 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); background: white; cursor: pointer; }
+  select:focus { outline: none; border-color: var(--blue); }
 
-    /* ===== MAIN LAYOUT ===== */
-    .main { max-width: 1440px; margin: 0 auto; padding: 28px 32px; }
+  /* MAIN */
+  .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
 
-    /* ===== WEEK SELECTOR ===== */
-    .week-bar {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 24px; flex-wrap: wrap;
-    }
-    .week-bar label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .week-select {
-      background: var(--bg-card); border: 1px solid var(--border);
-      color: var(--text); padding: 7px 14px; border-radius: var(--radius-sm);
-      font-size: 13px; cursor: pointer; min-width: 160px;
-    }
-    .week-select:focus { outline: none; border-color: var(--accent); }
-    .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
-    .chip {
-      background: var(--bg-card); border: 1px solid var(--border);
-      color: var(--text-muted); padding: 5px 12px; border-radius: 20px;
-      font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
-    .chip:hover, .chip.active { background: var(--accent-soft); border-color: rgba(79,110,247,0.4); color: var(--accent); }
-    .chip.source-ig.active { background: var(--pink-soft); border-color: rgba(236,72,153,0.4); color: var(--pink); }
-    .chip.source-fb.active { background: var(--accent-soft); border-color: rgba(79,110,247,0.4); color: var(--accent); }
-    .chip.source-web.active { background: var(--green-soft); border-color: rgba(34,197,94,0.4); color: var(--green); }
+  /* KPI GRID */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .kpi { background: white; border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow); position: relative; overflow: hidden; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .kpi.red::before { background: var(--accent); }
+  .kpi.blue::before { background: var(--blue); }
+  .kpi.green::before { background: var(--green); }
+  .kpi.gold::before { background: var(--gold); }
+  .kpi.purple::before { background: #7c3aed; }
+  .kpi-icon { font-size: 22px; margin-bottom: 10px; }
+  .kpi-value { font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
 
-    /* ===== STATS ROW ===== */
-    .stats-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px; margin-bottom: 28px;
-    }
-    .stat-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px; transition: border-color 0.2s;
-    }
-    .stat-card:hover { border-color: var(--border-light); }
-    .stat-number { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
-    .stat-number.accent { color: var(--accent); }
-    .stat-number.green { color: var(--green); }
-    .stat-number.orange { color: var(--orange); }
-    .stat-number.red { color: var(--red); }
-    .stat-number.pink { color: var(--pink); }
-    .stat-label { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-    .stat-sub { color: var(--text-dim); font-size: 11px; margin-top: 4px; }
+  /* GRID 2 COL */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
 
-    /* ===== SECTION HEADERS ===== */
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px; margin-top: 8px;
-    }
-    .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .section-count { color: var(--text-muted); font-size: 12px; background: var(--bg-card); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+  /* CARDS */
+  .card { background: white; border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .card-badge { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-green { background: #d1fae5; color: #059669; }
+  .badge-blue { background: #dbeafe; color: #2563eb; }
+  .badge-gold { background: #fef3c7; color: #d97706; }
+  .badge-gray { background: #f1f5f9; color: var(--muted); }
+  .card-body { padding: 16px 20px; }
 
-    /* ===== COMPETITOR GRID ===== */
-    .competitors-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px; margin-bottom: 36px;
-    }
-    .competitor-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px; cursor: pointer;
-      transition: all 0.2s; position: relative; overflow: hidden;
-    }
-    .competitor-card:hover { border-color: var(--border-light); background: var(--bg-card-hover); transform: translateY(-1px); }
-    .competitor-card.has-changes { border-left: 3px solid var(--accent); }
-    .competitor-card.high-alert { border-left: 3px solid var(--red); }
-    .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-    .card-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
-    .card-sector { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
-    .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-    .priority-dot.haute { background: var(--red); }
-    .priority-dot.moyenne { background: var(--orange); }
-    .priority-dot.basse { background: var(--green); }
-    .card-stats { display: flex; gap: 12px; margin-bottom: 14px; }
-    .card-stat { text-align: center; }
-    .card-stat-num { font-size: 20px; font-weight: 800; color: var(--accent); }
-    .card-stat-num.zero { color: var(--text-dim); }
-    .card-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.3px; }
-    .card-links { display: flex; gap: 8px; flex-wrap: wrap; }
-    .card-link {
-      font-size: 11px; padding: 3px 9px; border-radius: 6px; text-decoration: none;
-      transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px;
-    }
-    .card-link.site { background: var(--green-soft); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-    .card-link.ig { background: var(--pink-soft); color: var(--pink); border: 1px solid rgba(236,72,153,0.2); }
-    .card-link.fb { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(79,110,247,0.2); }
-    .card-link:hover { opacity: 0.8; }
-    .card-last-change {
-      margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
-      font-size: 11px; color: var(--text-muted);
-    }
-    .score-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
-    }
-    .score-1,.score-2 { background: var(--green-soft); color: var(--green); }
-    .score-3 { background: var(--orange-soft); color: var(--orange); }
-    .score-4,.score-5 { background: var(--red-soft); color: var(--red); }
+  /* PRICE TABLE */
+  .price-table { width: 100%; border-collapse: collapse; }
+  .price-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+  .price-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .price-table tr:hover td { background: #f8fafc; }
+  .price-tag { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 12px; }
+  .no-price { color: #94a3b8; font-style: italic; font-size: 12px; }
+  .score-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+  .s4 { background: #dc2626; }
+  .s3 { background: #f59e0b; }
+  .s2 { background: #3b82f6; }
+  .s1 { background: #94a3b8; }
 
-    /* ===== VEILLE TABLE ===== */
-    .table-container {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden; margin-bottom: 28px;
-    }
-    .table-toolbar {
-      padding: 16px 20px; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    }
-    .search-input {
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text); padding: 7px 14px; border-radius: var(--radius-sm);
-      font-size: 13px; width: 240px; transition: border-color 0.2s;
-    }
-    .search-input:focus { outline: none; border-color: var(--accent); }
-    .search-input::placeholder { color: var(--text-dim); }
-    .type-select {
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text); padding: 7px 12px; border-radius: var(--radius-sm);
-      font-size: 12px; cursor: pointer;
-    }
-    .table-scroll { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th {
-      background: var(--bg); color: var(--text-muted); font-weight: 600;
-      font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
-      padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    td { padding: 12px 16px; border-bottom: 1px solid rgba(36,40,64,0.5); vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(79,110,247,0.03); }
-    .td-source { white-space: nowrap; }
-    .source-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 6px;
-    }
-    .source-badge.Site\ Web { background: var(--green-soft); color: var(--green); }
-    .source-badge.Instagram { background: var(--pink-soft); color: var(--pink); }
-    .source-badge.Facebook { background: var(--accent-soft); color: var(--accent); }
-    .source-badge.Manuel { background: rgba(168,85,247,0.1); color: var(--purple); }
-    .type-badge {
-      display: inline-flex; align-items: center;
-      font-size: 11px; padding: 2px 8px; border-radius: 4px;
-      background: rgba(255,255,255,0.05); color: var(--text-muted); white-space: nowrap;
-    }
-    .type-badge.prix { background: var(--red-soft); color: var(--red); }
-    .type-badge.formation { background: var(--green-soft); color: var(--green); }
-    .type-badge.promo { background: var(--orange-soft); color: var(--orange); }
-    .td-content { max-width: 320px; }
-    .td-content p { color: var(--text); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .td-link a { color: var(--accent); font-size: 11px; text-decoration: none; }
-    .td-link a:hover { text-decoration: underline; }
-    .td-date { white-space: nowrap; color: var(--text-muted); font-size: 11px; }
-    .statut-badge {
-      font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600;
-    }
-    .statut-badge.Nouveau { background: var(--red-soft); color: var(--red); }
-    .statut-badge.Analysé { background: var(--orange-soft); color: var(--orange); }
-    .statut-badge.Archivé { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+  /* REVIEW ANALYSIS */
+  .review-section { margin-bottom: 14px; }
+  .review-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .review-positive .review-section-title { color: var(--green); }
+  .review-negative .review-section-title { color: var(--accent); }
+  .reason-tag { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; margin: 3px; cursor: default; }
+  .reason-tag.pos { background: #d1fae5; color: #065f46; }
+  .reason-tag.neg { background: #fee2e2; color: #991b1b; }
+  .reason-tag .count { background: rgba(0,0,0,.1); padding: 1px 5px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .insight-box { background: #f0f9ff; border-left: 3px solid var(--blue); padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 10px; font-size: 13px; color: var(--text); line-height: 1.5; }
+  .insight-box strong { color: var(--blue); }
 
-    /* ===== EMPTY STATE ===== */
-    .empty-state {
-      text-align: center; padding: 60px 20px; color: var(--text-muted);
-    }
-    .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
-    .empty-state h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
-    .empty-state p { font-size: 13px; }
+  /* INSTAGRAM */
+  .insta-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .insta-item:last-child { border-bottom: none; }
+  .insta-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .insta-handle { font-size: 12px; color: #c026d3; }
+  .insta-status { font-size: 12px; }
+  .insta-link { color: var(--blue); text-decoration: none; font-size: 12px; font-weight: 600; }
+  .insta-link:hover { text-decoration: underline; }
 
-    /* ===== LOADING ===== */
-    .loading-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(13,15,26,0.7); backdrop-filter: blur(4px);
-      align-items: center; justify-content: center; z-index: 1000; flex-direction: column; gap: 16px;
-    }
-    .loading-overlay.active { display: flex; }
-    .spinner {
-      width: 40px; height: 40px; border: 3px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { color: var(--text-muted); font-size: 13px; }
+  /* VISA SECTION */
+  .visa-item { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+  .visa-yes { background: #d1fae5; color: #065f46; }
+  .visa-no  { background: #f1f5f9; color: var(--muted); }
+  .visa-label { font-weight: 700; margin-bottom: 4px; }
+  .visa-context { font-size: 12px; opacity: .8; line-height: 1.4; }
 
-    /* ===== ERROR BANNER ===== */
-    .error-banner {
-      display: none; background: var(--red-soft); border: 1px solid rgba(239,68,68,0.3);
-      color: var(--red); padding: 12px 20px; border-radius: var(--radius-sm);
-      margin-bottom: 20px; font-size: 13px;
-    }
-    .error-banner.active { display: block; }
+  /* SIGNALS TABLE */
+  .signals-table { width: 100%; border-collapse: collapse; }
+  .signals-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap; }
+  .signals-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .signals-table tr:hover td { background: #f8fafc; }
+  .contenu-cell { max-width: 280px; font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .type-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .t-price { background: #dbeafe; color: #1d4ed8; }
+  .t-new   { background: #d1fae5; color: #059669; }
+  .t-mod   { background: #fef3c7; color: #d97706; }
+  .t-none  { background: #f1f5f9; color: var(--muted); }
+  .status-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .s-new  { background: #fee2e2; color: #dc2626; }
+  .s-done { background: #d1fae5; color: #059669; }
+  .s-prog { background: #fef3c7; color: #d97706; }
 
-    /* ===== FOOTER ===== */
-    .footer {
-      border-top: 1px solid var(--border); padding: 20px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      color: var(--text-dim); font-size: 11px;
-    }
-    .footer a { color: var(--text-muted); text-decoration: none; }
+  /* ACTIONS */
+  .action-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: white; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .action-body { flex: 1; }
+  .action-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .action-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .action-meta { display: flex; gap: 8px; margin-top: 8px; }
+  .urgency { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+  .u-high   { background: #fee2e2; color: #dc2626; }
+  .u-medium { background: #fef3c7; color: #d97706; }
+  .u-low    { background: #d1fae5; color: #059669; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-      .header { padding: 0 16px; }
-      .main { padding: 16px; }
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .competitors-grid { grid-template-columns: 1fr; }
-      .week-bar { flex-direction: column; align-items: flex-start; }
-      .filter-chips { margin-left: 0; }
-    }
-  </style>
+  /* LOADING / ERROR */
+  .loading-overlay { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .error-box { background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 14px; color: #dc2626; font-size: 13px; }
+
+  /* FULL WIDTH */
+  .full-width { margin-bottom: 24px; }
+
+  .section-sep { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
 </head>
 <body>
 
-<!-- Loading overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Chargement des données Airtable...</div>
-</div>
-
-<!-- Header -->
-<header class="header">
+<!-- HEADER -->
+<div class="header">
   <div class="header-left">
-    <div class="logo">K</div>
+    <div class="logo">E</div>
     <div>
-      <div class="brand">Veille Concurrentielle <span>Alicante</span></div>
+      <h1>Vigilancia Competitiva — Alicante</h1>
+      <div class="sub">ESATUR · Hostelería · Turismo · TCP · Hospitalidad</div>
     </div>
   </div>
   <div class="header-right">
-    <div class="badge-live">Live</div>
-    <div class="last-updated" id="lastUpdated">—</div>
-    <button class="btn-refresh" onclick="loadAll()">↻ Actualiser</button>
+    <span class="live-badge">● LIVE</span>
+    <span class="last-update" id="lastUpdate">Actualizando...</span>
+    <button class="btn" onclick="loadAll()">↻ Actualizar</button>
   </div>
-</header>
+</div>
 
-<!-- Main -->
-<main class="main">
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">Filtrar por:</span>
+  <select id="filterSemana" onchange="applyFilters()">
+    <option value="">Todas las semanas</option>
+  </select>
+  <select id="filterSector" onchange="applyFilters()">
+    <option value="">Todos los sectores</option>
+    <option value="Hostelería">Hostelería / Turismo</option>
+    <option value="TCP">TCP / Aeronáutica</option>
+    <option value="Hospitalidad">Hospitalidad / Eventos</option>
+    <option value="Visa">Formación + Visa</option>
+  </select>
+  <select id="filterScore" onchange="applyFilters()">
+    <option value="">Todas las prioridades</option>
+    <option value="4">🔴 Crítico (Score 4)</option>
+    <option value="3">🟡 Alto (Score 3)</option>
+    <option value="2">🔵 Medio (Score 2)</option>
+    <option value="1">⚪ Bajo (Score 1)</option>
+  </select>
+  <select id="filterStatus" onchange="applyFilters()">
+    <option value="">Todos los estados</option>
+    <option value="Nuevo">Nuevo</option>
+    <option value="En proceso">En proceso</option>
+    <option value="Tratado">Tratado</option>
+  </select>
+</div>
 
-  <!-- Error banner -->
-  <div class="error-banner" id="errorBanner"></div>
+<div class="main">
 
-  <!-- Week + Filters bar -->
-  <div class="week-bar">
-    <label>Semaine</label>
-    <select class="week-select" id="weekSelect" onchange="applyFilters()">
-      <option value="">Toutes les semaines</option>
-    </select>
-    <div class="filter-chips" id="sourceChips">
-      <div class="chip source-web" data-source="Site Web" onclick="toggleSource(this)">🌐 Site Web</div>
-      <div class="chip source-ig" data-source="Instagram" onclick="toggleSource(this)">📸 Instagram</div>
-      <div class="chip source-fb" data-source="Facebook" onclick="toggleSource(this)">👥 Facebook</div>
-    </div>
-  </div>
-
-  <!-- Stats Row -->
-  <div class="stats-row" id="statsRow">
-    <div class="stat-card">
-      <div class="stat-number accent" id="statTotal">—</div>
-      <div class="stat-label">Changements détectés</div>
-      <div class="stat-sub" id="statWeekLabel">cette semaine</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number red" id="statUrgents">—</div>
-      <div class="stat-label">Alertes prioritaires</div>
-      <div class="stat-sub">Score ≥ 4</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number green" id="statConcurrents">—</div>
-      <div class="stat-label">Concurrents surveillés</div>
-      <div class="stat-sub">actifs</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number pink" id="statSocial">—</div>
-      <div class="stat-label">Posts réseaux sociaux</div>
-      <div class="stat-sub">Instagram + Facebook</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number orange" id="statNouveaux">—</div>
-      <div class="stat-label">En attente de traitement</div>
-      <div class="stat-sub">Statut "Nouveau"</div>
-    </div>
+  <!-- KPI ROW -->
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi red"><div class="kpi-icon">🚨</div><div class="kpi-value" id="kpiCritical">—</div><div class="kpi-label">Alertas críticas</div><div class="kpi-sub">Precio / Duración cambiados</div></div>
+    <div class="kpi blue"><div class="kpi-icon">📡</div><div class="kpi-value" id="kpiSignals">—</div><div class="kpi-label">Señales esta semana</div><div class="kpi-sub">Cambios detectados</div></div>
+    <div class="kpi green"><div class="kpi-icon">🏫</div><div class="kpi-value" id="kpiCompetitors">—</div><div class="kpi-label">Competidores</div><div class="kpi-sub">Sitios monitorizados</div></div>
+    <div class="kpi gold"><div class="kpi-icon">🌍</div><div class="kpi-value" id="kpiVisa">—</div><div class="kpi-label">Mencionan visa</div><div class="kpi-sub">Oportunidad de mercado</div></div>
+    <div class="kpi purple"><div class="kpi-icon">📸</div><div class="kpi-value" id="kpiInsta">—</div><div class="kpi-label">Con Instagram</div><div class="kpi-sub">Presencia digital detectada</div></div>
   </div>
 
-  <!-- Competitor Cards -->
-  <div class="section-header">
-    <div class="section-title">Concurrents</div>
-    <div class="section-count" id="concCount">—</div>
-  </div>
-  <div class="competitors-grid" id="competitorsGrid">
-    <div class="empty-state" style="grid-column:1/-1">
-      <div class="icon">📊</div>
-      <h3>Chargement en cours...</h3>
+  <!-- ROW 1: Precios + Avis -->
+  <div class="grid-2">
+
+    <!-- PRECIOS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💰 Comparativa de Precios</div>
+        <span class="card-badge badge-blue" id="priceCount">—</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="price-table" id="priceTable">
+          <thead>
+            <tr>
+              <th>Competidor</th>
+              <th>Sector</th>
+              <th>Precios detectados</th>
+              <th>Duración</th>
+            </tr>
+          </thead>
+          <tbody id="priceBody">
+            <tr><td colspan="4" class="loading-overlay"><div class="spinner"></div>Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- AVIS - RAISONS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⭐ Análisis de Opiniones</div>
+        <span class="card-badge badge-green" id="reviewCount">—</span>
+      </div>
+      <div class="card-body">
+        <div class="review-section review-positive">
+          <div class="review-section-title">✅ Lo que valoran los estudiantes</div>
+          <div id="posReasons">
+            <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
+          </div>
+          <div class="insight-box" id="posInsight" style="display:none">
+            <strong>💡 Para ESATUR:</strong> <span id="posInsightText"></span>
+          </div>
+        </div>
+        <div class="review-section review-negative" style="margin-top:16px">
+          <div class="review-section-title">⚠️ Lo que decepciona / Puntos de mejora</div>
+          <div id="negReasons">
+          </div>
+          <div class="insight-box" id="negInsight" style="display:none; background:#fff5f5; border-color: var(--accent)">
+            <strong>💡 Para ESATUR:</strong> <span id="negInsightText"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Veille Table -->
-  <div class="section-header">
-    <div class="section-title">Détail des changements détectés</div>
-    <div class="section-count" id="veilleCount">—</div>
-  </div>
-  <div class="table-container">
-    <div class="table-toolbar">
-      <input class="search-input" type="search" id="searchInput" placeholder="Rechercher un concurrent, contenu..." oninput="filterTable()" />
-      <select class="type-select" id="typeFilter" onchange="filterTable()">
-        <option value="">Tous les types</option>
-        <option>Nouveau prix</option>
-        <option>Nouvelle formation</option>
-        <option>Promotion / Offre</option>
-        <option>Modification contenu</option>
-        <option>Post réseau social</option>
-        <option>Avis client</option>
-        <option>Actualité / Événement</option>
-      </select>
+  <!-- ROW 2: Instagram + Visa -->
+  <div class="grid-2">
+
+    <!-- INSTAGRAM -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📸 Presencia Instagram Competidores</div>
+        <span class="card-badge badge-gold">Digital</span>
+      </div>
+      <div class="card-body">
+        <div id="instaList">
+          <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
+        </div>
+        <div class="insight-box" style="margin-top:12px">
+          <strong>💡 Para ESATUR:</strong> Si los competidores tienen Instagram activo, publicar contenido regular (3-4x/semana) sobre éxito de alumnos, prácticas, empleo + vida en Alicante para estudiantes internacionales.
+        </div>
+      </div>
     </div>
-    <div class="table-scroll">
-      <table id="veilleTable">
+
+    <!-- VISA ÉTUDIANT -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🌍 Visa de Estudios — Oportunidad</div>
+        <span class="card-badge badge-blue" id="visaBadge">—</span>
+      </div>
+      <div class="card-body">
+        <div id="visaList">
+          <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
+        </div>
+        <div class="insight-box" id="visaInsight" style="margin-top:12px; display:none">
+          <strong>💡 Oportunidad:</strong> <span id="visaInsightText">Pocos competidores mencionan la visa de estudiante. ESATUR puede diferenciarse ofreciendo acompañamiento visa (NIE, TIE, autorización de estancia) para estudiantes internacionales.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEÑALES TABLE -->
+  <div class="section-sep">Registro detallado de señales</div>
+  <div class="full-width card">
+    <div class="card-header">
+      <div class="card-title">📋 Todos los cambios detectados</div>
+      <div style="display:flex;gap:8px">
+        <span class="card-badge badge-red" id="totalSignals">—</span>
+        <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="applyFilters()"
+          style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;width:160px">
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="signals-table">
         <thead>
           <tr>
-            <th>Concurrent</th>
-            <th>Source</th>
-            <th>Type</th>
-            <th>Contenu</th>
-            <th>Score</th>
-            <th>Statut</th>
-            <th>Date</th>
-            <th>Lien</th>
+            <th>P</th>
+            <th>Competidor</th>
+            <th>Tipo</th>
+            <th>Precio</th>
+            <th>Visa</th>
+            <th>Instagram</th>
+            <th>Resumen</th>
+            <th>Estado</th>
+            <th>Semana</th>
           </tr>
         </thead>
-        <tbody id="veilleBody">
-          <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Chargement...</td></tr>
+        <tbody id="signalsBody">
+          <tr><td colspan="9" class="loading-overlay"><div class="spinner"></div>Cargando datos Airtable...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-</main>
+  <!-- ACTIONS RECOMMANDÉES -->
+  <div class="section-sep">Acciones recomendadas</div>
+  <div class="full-width card">
+    <div class="card-header">
+      <div class="card-title">🎯 Top acciones para el director</div>
+      <span class="card-badge badge-red">Esta semana</span>
+    </div>
+    <div class="card-body" id="actionsBody">
+      <div class="loading-overlay" style="padding:30px"><div class="spinner"></div>Generando recomendaciones...</div>
+    </div>
+  </div>
 
-<!-- Footer -->
-<footer class="footer">
-  <div>Bureau Kenzel · Dashboard Veille Concurrentielle Alicante</div>
-  <div>Données Airtable · N8N · Make · Claude AI</div>
-</footer>
+</div>
 
 <script>
-  // ===== STATE =====
-  let state = {
-    concurrents: [],
-    veille: [],
-    allVeille: [],
-    semaineCourante: '',
-    selectedWeek: '',
-    selectedSource: null,
-    loading: false
-  };
+// ── CONFIGURATION ──
+const AT_TOKEN = 'patLcCvV71GyvB4sq.6da2d2692b015ffc03cbdd0bb20b8a01b74bd09c48f78cb41b3d0b513ec36522';
+const AT_BASE  = 'app89E8GwOlsSeE0X';
+const AT_CONC  = 'tblSiGUsTuXpEwioY';
+const AT_VEILLE= 'tbl13Y1eW54aqPTxG';
 
-  // ===== UTILS =====
-  function formatDate(iso) {
-    if (!iso) return '—';
-    try {
-      return new Date(iso).toLocaleDateString('fr-FR', {
-        day: '2-digit', month: 'short', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      });
-    } catch { return iso; }
+let allRecords = [], allCompetitors = [];
+
+// ── FETCH HELPERS ──
+async function atFetch(tableId, params='') {
+  const res = await fetch(
+    `https://api.airtable.com/v0/${AT_BASE}/${tableId}?${params}`,
+    { headers: { Authorization: `Bearer ${AT_TOKEN}` } }
+  );
+  if (!res.ok) throw new Error(`Airtable error ${res.status}`);
+  return res.json();
+}
+
+async function fetchAll(tableId, params='') {
+  let records = [], offset = null;
+  do {
+    const p = offset ? params + `&offset=${offset}` : params;
+    const data = await atFetch(tableId, p);
+    records = records.concat(data.records || []);
+    offset = data.offset;
+  } while (offset);
+  return records;
+}
+
+// ── MAIN LOAD ──
+async function loadAll() {
+  document.getElementById('lastUpdate').textContent = 'Actualizando...';
+  try {
+    const [veille, concurrents] = await Promise.all([
+      fetchAll(AT_VEILLE, 'sort%5B0%5D%5Bfield%5D=Score+importance&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=100'),
+      fetchAll(AT_CONC, 'filterByFormula=%7BActif%7D%3D1')
+    ]);
+    allRecords = veille;
+    allCompetitors = concurrents;
+
+    // Populate semana filter
+    const semanas = [...new Set(veille.map(r => r.fields['Semaine']).filter(Boolean))].sort().reverse();
+    const sel = document.getElementById('filterSemana');
+    sel.innerHTML = '<option value="">Todas las semanas</option>' +
+      semanas.map(s => `<option value="${s}">${s}</option>`).join('');
+
+    applyFilters();
+    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES');
+  } catch(e) {
+    document.getElementById('lastUpdate').textContent = '⚠️ Error de conexión';
+    console.error(e);
+    showError(e.message);
   }
+}
 
-  function getWeekLabel(iso) {
-    if (!iso) return '—';
-    try { return new Date(iso).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); }
-    catch { return iso; }
-  }
+function showError(msg) {
+  ['priceBody','signalsBody','actionsBody','instaList','visaList','posReasons','negReasons'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<div class="error-box">⚠️ ${msg}<br><small>Verifica la conexión con Airtable.</small></div>`;
+  });
+}
 
-  function showLoading(v) {
-    document.getElementById('loadingOverlay').classList.toggle('active', v);
-  }
+// ── FILTERS ──
+function applyFilters() {
+  const semana  = document.getElementById('filterSemana').value;
+  const sector  = document.getElementById('filterSector').value;
+  const score   = document.getElementById('filterScore').value;
+  const status  = document.getElementById('filterStatus').value;
+  const search  = (document.getElementById('searchInput').value || '').toLowerCase();
 
-  function showError(msg) {
-    const el = document.getElementById('errorBanner');
-    if (msg) { el.textContent = msg; el.classList.add('active'); }
-    else { el.classList.remove('active'); }
-  }
-
-  // ===== FETCH =====
-  async function fetchConcurrents() {
-    const res = await fetch('/api/concurrents');
-    if (!res.ok) throw new Error(`Concurrents: ${res.status}`);
-    return res.json();
-  }
-
-  async function fetchVeille(semaine = '') {
-    let url = '/api/veille?limit=200';
-    if (semaine) url += `&semaine=${encodeURIComponent(semaine)}`;
-    if (state.selectedSource) url += `&source=${encodeURIComponent(state.selectedSource)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Veille: ${res.status}`);
-    return res.json();
-  }
-
-  // ===== LOAD ALL =====
-  async function loadAll() {
-    showLoading(true);
-    showError('');
-    try {
-      const [concData, veilleData] = await Promise.all([
-        fetchConcurrents(),
-        fetchVeille(state.selectedWeek)
-      ]);
-
-      state.concurrents = concData.concurrents || [];
-      state.semaineCourante = concData.semaine_courante || '';
-      state.allVeille = veilleData.records || [];
-      state.veille = state.allVeille;
-
-      // Populate week selector
-      const weekSel = document.getElementById('weekSelect');
-      const semaines = veilleData.semaines_disponibles || [];
-      weekSel.innerHTML = '<option value="">Toutes les semaines</option>';
-      semaines.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = s === state.semaineCourante ? `${s} (semaine courante)` : s;
-        if (s === state.semaineCourante && !state.selectedWeek) opt.selected = true;
-        weekSel.appendChild(opt);
-      });
-
-      if (!state.selectedWeek) {
-        // Auto-select current week if available, otherwise the most recent week with data
-        const defaultWeek = semaines.includes(state.semaineCourante) ? state.semaineCourante : (semaines[0] || '');
-        if (defaultWeek) {
-          state.selectedWeek = defaultWeek;
-          weekSel.value = defaultWeek;
-          state.veille = state.allVeille.filter(r => r.fields['Semaine'] === defaultWeek);
-        }
-      }
-
-      // Update last updated
-      const now = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      document.getElementById('lastUpdated').textContent = `Mis à jour à ${now}`;
-
-      renderStats(veilleData, state.veille);
-      renderConcurrents();
-      renderTable();
-
-    } catch (err) {
-      showError(`Erreur de chargement: ${err.message}. Vérifiez vos variables d'environnement Vercel (AIRTABLE_TOKEN, AIRTABLE_BASE_ID, etc.)`);
-    } finally {
-      showLoading(false);
-    }
-  }
-
-  // ===== RENDER STATS =====
-  function renderStats(veilleData, filteredVeille) {
-    const stats = veilleData.stats || {};
-    document.getElementById('statTotal').textContent = filteredVeille.length;
-    document.getElementById('statUrgents').textContent = filteredVeille.filter(r => (r.fields['Score importance'] || 0) >= 4).length;
-    document.getElementById('statConcurrents').textContent = state.concurrents.length;
-    document.getElementById('statSocial').textContent = filteredVeille.filter(r => r.fields['Source'] === 'Instagram' || r.fields['Source'] === 'Facebook').length;
-    document.getElementById('statNouveaux').textContent = filteredVeille.filter(r => r.fields['Statut'] === 'Nouveau').length;
-    document.getElementById('statWeekLabel').textContent = state.selectedWeek ? `semaine ${state.selectedWeek}` : 'toutes semaines';
-  }
-
-  // ===== RENDER COMPETITORS =====
-  function renderConcurrents() {
-    const grid = document.getElementById('competitorsGrid');
-    document.getElementById('concCount').textContent = `${state.concurrents.length} actifs`;
-
-    if (!state.concurrents.length) {
-      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-        <div class="icon">🏫</div>
-        <h3>Aucun concurrent trouvé</h3>
-        <p>Vérifiez la table CONCURRENTS dans Airtable.</p>
-      </div>`;
-      return;
-    }
-
-    grid.innerHTML = state.concurrents.map(c => {
-      const stats = c.stats || {};
-      const changes = stats.cette_semaine || 0;
-      const totalChanges = stats.total_changements || 0;
-      const scoreMax = stats.score_max || 0;
-      const hasChanges = changes > 0;
-      const highAlert = scoreMax >= 4;
-      const priorityClass = (c.priorite || 'Moyenne').toLowerCase().replace('é', 'e').replace('è', 'e');
-
-      return `<div class="competitor-card ${hasChanges ? 'has-changes' : ''} ${highAlert ? 'high-alert' : ''}">
-        <div class="card-header">
-          <div>
-            <div class="card-name">${c.nom}</div>
-            <div class="card-sector">${c.secteur}</div>
-          </div>
-          <div class="priority-dot ${priorityClass}" title="Priorité ${c.priorite}"></div>
-        </div>
-        <div class="card-stats">
-          <div class="card-stat">
-            <div class="card-stat-num ${changes === 0 ? 'zero' : ''}">${changes}</div>
-            <div class="card-stat-label">Cette sem.</div>
-          </div>
-          <div class="card-stat">
-            <div class="card-stat-num ${totalChanges === 0 ? 'zero' : ''}">${totalChanges}</div>
-            <div class="card-stat-label">Total</div>
-          </div>
-          ${scoreMax > 0 ? `<div class="card-stat">
-            <div class="score-badge score-${scoreMax}" style="margin-top:2px">⚡ ${scoreMax}/5</div>
-          </div>` : ''}
-        </div>
-        <div class="card-links">
-          ${c.site_web ? `<a class="card-link site" href="${c.site_web}" target="_blank">🌐 Site</a>` : ''}
-          ${c.instagram ? `<a class="card-link ig" href="https://instagram.com/${c.instagram}" target="_blank">📸 @${c.instagram}</a>` : ''}
-          ${c.facebook ? `<a class="card-link fb" href="${c.facebook}" target="_blank">👥 Page</a>` : ''}
-        </div>
-        ${stats.derniere_detection ? `<div class="card-last-change">
-          Dernier changement: ${getWeekLabel(stats.derniere_detection)}
-        </div>` : ''}
-      </div>`;
-    }).join('');
-  }
-
-  // ===== RENDER TABLE =====
-  function renderTable() {
-    const tbody = document.getElementById('veilleBody');
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const typeFilter = document.getElementById('typeFilter').value;
-
-    let rows = state.veille;
-
+  const filtered = allRecords.filter(r => {
+    const f = r.fields;
+    if (semana && f['Semaine'] !== semana) return false;
+    if (sector && !(f['Contenu détecté']||'').toLowerCase().includes(sector.toLowerCase())) return false;
+    if (score  && String(f['Score importance']) !== score) return false;
+    if (status && f['Statut'] !== status) return false;
     if (search) {
-      rows = rows.filter(r => {
-        const nom = r.fields['Titre'] || r.fields.titre || '';
-        const contenu = r.fields['Contenu détecté'] || '';
-        return (nom + contenu).toLowerCase().includes(search);
+      const hay = (f['Titre']||'' + f['Contenu détecté']||'' + f['Type de changement']||'').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  renderKPIs(filtered);
+  renderPrices(filtered);
+  renderReviews(filtered);
+  renderInstagram(filtered);
+  renderVisa(filtered);
+  renderSignals(filtered);
+  renderActions(filtered);
+}
+
+// ── KPIs ──
+function renderKPIs(records) {
+  const critical   = records.filter(r => r.fields['Score importance'] >= 4).length;
+  const thisWeek   = records.length;
+  const withVisa   = records.filter(r => r.fields['Visa Étudiant Mentionné']).length;
+  const withInsta  = records.filter(r => r.fields['Instagram Handle']).length;
+
+  document.getElementById('kpiCritical').textContent    = critical;
+  document.getElementById('kpiSignals').textContent     = thisWeek;
+  document.getElementById('kpiCompetitors').textContent = allCompetitors.length;
+  document.getElementById('kpiVisa').textContent        = withVisa;
+  document.getElementById('kpiInsta').textContent       = withInsta;
+  document.getElementById('totalSignals').textContent   = thisWeek + ' señales';
+}
+
+// ── PRICES TABLE ──
+function renderPrices(records) {
+  const withPrices = records.filter(r => r.fields['Prix détectés']);
+  document.getElementById('priceCount').textContent = withPrices.length + ' con precios';
+
+  if (!withPrices.length) {
+    document.getElementById('priceBody').innerHTML =
+      `<tr><td colspan="4"><div class="empty-state"><div class="icon">💰</div>No se detectaron precios esta semana.<br><small>Verifica manualmente los sitios web.</small></div></td></tr>`;
+    return;
+  }
+
+  const rows = withPrices.map(r => {
+    const f = r.fields;
+    const prices = (f['Prix détectés']||'').split('|').map(p => p.trim()).filter(Boolean);
+    const sector = extractSector(f['Contenu détecté']||'');
+    const score  = f['Score importance'] || 0;
+    const priceTags = prices.map(p => `<span class="price-tag">${esc(p)}</span>`).join(' ');
+    return `<tr>
+      <td><strong>${esc(f['Titre']?.split('—')[0]?.trim()||'?')}</strong></td>
+      <td><small>${esc(sector)}</small></td>
+      <td>${priceTags || '<span class="no-price">No detectado</span>'}</td>
+      <td><small>${esc(f['Durées détectées']||'—')}</small></td>
+    </tr>`;
+  });
+  document.getElementById('priceBody').innerHTML = rows.join('');
+}
+
+// ── REVIEW ANALYSIS ──
+function renderReviews(records) {
+  const withReviews = records.filter(r => r.fields['Raisons positives'] || r.fields['Raisons négatives']);
+  document.getElementById('reviewCount').textContent = withReviews.length + ' con opiniones';
+
+  // Agrégation des raisons positives
+  const posCounts = {}, negCounts = {};
+  records.forEach(r => {
+    const f = r.fields;
+    if (f['Raisons positives']) {
+      f['Raisons positives'].split(',').forEach(reason => {
+        const k = reason.trim();
+        if (k) posCounts[k] = (posCounts[k]||0) + 1;
       });
     }
-    if (typeFilter) {
-      rows = rows.filter(r => r.fields['Type de changement'] === typeFilter);
+    if (f['Raisons négatives']) {
+      f['Raisons négatives'].split(',').forEach(reason => {
+        const k = reason.trim();
+        if (k) negCounts[k] = (negCounts[k]||0) + 1;
+      });
     }
+  });
 
-    document.getElementById('veilleCount').textContent = `${rows.length} entrée${rows.length > 1 ? 's' : ''}`;
+  // Positives
+  const posSorted = Object.entries(posCounts).sort((a,b)=>b[1]-a[1]);
+  if (posSorted.length) {
+    document.getElementById('posReasons').innerHTML = posSorted
+      .map(([r,c]) => `<span class="reason-tag pos">${esc(r)} <span class="count">${c}</span></span>`)
+      .join('');
+    const top = posSorted[0][0];
+    document.getElementById('posInsight').style.display = 'block';
+    document.getElementById('posInsightText').textContent =
+      `Los estudiantes valoran especialmente "${top}". ESATUR debería destacarlo en su comunicación y web.`;
+  } else {
+    document.getElementById('posReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron opiniones positivas</div>';
+  }
 
-    if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="8">
-        <div class="empty-state">
-          <div class="icon">🔍</div>
-          <h3>Aucun résultat</h3>
-          <p>Aucun changement détecté pour ces critères.</p>
+  // Negatives
+  const negSorted = Object.entries(negCounts).sort((a,b)=>b[1]-a[1]);
+  if (negSorted.length) {
+    document.getElementById('negReasons').innerHTML = negSorted
+      .map(([r,c]) => `<span class="reason-tag neg">${esc(r)} <span class="count">${c}</span></span>`)
+      .join('');
+    const top = negSorted[0][0];
+    document.getElementById('negInsight').style.display = 'block';
+    document.getElementById('negInsightText').textContent =
+      `El mayor punto de queja es "${top}". ESATUR puede diferenciarse asegurando exactamente este aspecto y comunicándolo claramente.`;
+  } else {
+    document.getElementById('negReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron quejas</div>';
+  }
+}
+
+// ── INSTAGRAM ──
+function renderInstagram(records) {
+  const withInsta = records.filter(r => r.fields['Instagram Handle']);
+  const unique = {};
+  withInsta.forEach(r => {
+    const f = r.fields;
+    const handle = f['Instagram Handle'];
+    if (handle && !unique[handle]) unique[handle] = f;
+  });
+
+  const items = Object.entries(unique);
+  if (!items.length) {
+    document.getElementById('instaList').innerHTML =
+      `<div class="empty-state"><div class="icon">📸</div>No se detectó Instagram esta semana</div>`;
+    return;
+  }
+
+  document.getElementById('instaList').innerHTML = items.map(([handle, f]) => `
+    <div class="insta-item">
+      <div>
+        <div class="insta-name">${esc(f['Titre']?.split('—')[0]?.trim()||handle)}</div>
+        <div class="insta-handle">@${esc(handle)}</div>
+        ${f['Instagram Activité'] ? `<div class="insta-status" style="color:var(--green);font-size:11px;margin-top:2px">🟢 ${esc(f['Instagram Activité'])}</div>` : ''}
+      </div>
+      <a href="https://www.instagram.com/${esc(handle)}/" target="_blank" class="insta-link">Ver perfil →</a>
+    </div>
+  `).join('');
+}
+
+// ── VISA ──
+function renderVisa(records) {
+  const withVisa = records.filter(r => r.fields['Visa Étudiant Mentionné']);
+  const without  = records.filter(r => !r.fields['Visa Étudiant Mentionné'] && r.fields['Titre']);
+
+  document.getElementById('visaBadge').textContent = withVisa.length + ' lo mencionan';
+
+  let html = '';
+  if (withVisa.length) {
+    html += withVisa.map(r => `
+      <div class="visa-item visa-yes">
+        <div class="visa-label">✅ ${esc(r.fields['Titre']?.split('—')[0]?.trim()||'?')} — Menciona visa</div>
+        ${r.fields['Visa Contexte'] ? `<div class="visa-context">${esc(r.fields['Visa Contexte'].slice(0,200))}...</div>` : ''}
+      </div>
+    `).join('');
+  }
+  if (without.length) {
+    const names = [...new Set(without.map(r => r.fields['Titre']?.split('—')[0]?.trim()))].filter(Boolean).slice(0,5);
+    html += `<div class="visa-item visa-no"><div class="visa-label">❌ No mencionan visa: ${names.map(esc).join(', ')}</div></div>`;
+  }
+  if (!html) html = '<div class="empty-state" style="padding:12px">Sin datos suficientes</div>';
+
+  document.getElementById('visaList').innerHTML = html;
+
+  // Insight
+  const ins = document.getElementById('visaInsight');
+  ins.style.display = 'block';
+  if (withVisa.length === 0) {
+    document.getElementById('visaInsightText').textContent =
+      'NINGÚN competidor menciona la visa de estudiante. Esta es una GRAN oportunidad de diferenciación para ESATUR atrayendo estudiantes internacionales.';
+  } else if (withVisa.length < records.length / 2) {
+    document.getElementById('visaInsightText').textContent =
+      `Solo ${withVisa.length} competidor(es) mencionan la visa. ESATUR puede posicionarse como el referente en formación para estudiantes internacionales en Alicante.`;
+  } else {
+    document.getElementById('visaInsightText').textContent =
+      'Varios competidores mencionan la visa. ESATUR debe destacar con un servicio de acompañamiento completo (NIE, TIE, alojamiento, integración).';
+  }
+}
+
+// ── SIGNALS TABLE ──
+function renderSignals(records) {
+  if (!records.length) {
+    document.getElementById('signalsBody').innerHTML =
+      '<tr><td colspan="9"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
+    return;
+  }
+
+  const scoreClass = s => s >= 4 ? 's4' : s >= 3 ? 's3' : s >= 2 ? 's2' : 's1';
+  const typeClass  = t => t?.includes('precio') ? 't-price' : t?.includes('Nuevo') ? 't-new' : t?.includes('Modif') ? 't-mod' : 't-none';
+  const statusClass = s => s === 'Nuevo' ? 's-new' : s === 'Tratado' ? 's-done' : 's-prog';
+
+  const rows = records.map(r => {
+    const f = r.fields;
+    const score  = f['Score importance'] || 0;
+    const nom    = f['Titre']?.split('—')[0]?.trim() || '?';
+    const type   = f['Type de changement'] || '—';
+    const prix   = f['Prix détectés'] || '';
+    const visa   = f['Visa Étudiant Mentionné'] ? '✅' : '—';
+    const insta  = f['Instagram Handle'] ? `@${esc(f['Instagram Handle'])}` : '—';
+    const resumen = (f['Contenu détecté']||'').replace(/\n/g,' ').slice(0,120) + (f['Contenu détecté']?.length > 120 ? '...' : '');
+    const statut = f['Statut'] || 'Nuevo';
+    const semana = f['Semaine'] || '—';
+    const link   = f['Lien source'] ? `<a href="${esc(f['Lien source'])}" target="_blank" style="color:var(--blue);font-size:11px">Ver →</a>` : '';
+
+    return `<tr>
+      <td><span class="score-dot ${scoreClass(score)}"></span>${score}</td>
+      <td><strong>${esc(nom)}</strong>${link ? '<br>' + link : ''}</td>
+      <td><span class="type-chip ${typeClass(type)}">${esc(type)}</span></td>
+      <td style="font-size:12px">${prix ? esc(prix.split('|')[0]) : '<span class="no-price">—</span>'}</td>
+      <td style="text-align:center">${visa}</td>
+      <td style="font-size:12px;color:#c026d3">${insta}</td>
+      <td class="contenu-cell">${esc(resumen)}</td>
+      <td><span class="status-chip ${statusClass(statut)}">${esc(statut)}</span></td>
+      <td style="font-size:12px;white-space:nowrap">${esc(semana)}</td>
+    </tr>`;
+  });
+
+  document.getElementById('signalsBody').innerHTML = rows.join('');
+}
+
+// ── ACTIONS ──
+function renderActions(records) {
+  const critical  = records.filter(r => r.fields['Score importance'] >= 4);
+  const withInsta = records.filter(r => r.fields['Instagram Handle']);
+  const withVisa  = records.filter(r => r.fields['Visa Étudiant Mentionné']);
+
+  const actions = [];
+
+  if (critical.length) {
+    actions.push({
+      num: 1, urgency: 'Alta', tag: 'u-high',
+      title: `⚠️ Verificar ${critical.length} alerta(s) de precio/duración`,
+      desc: `Competidores con cambios críticos: ${critical.map(r => r.fields['Titre']?.split('—')[0]?.trim()).join(', ')}. Revisar si ESATUR debe ajustar su pricing o argumentario de venta.`
+    });
+  }
+
+  if (withVisa.length === 0) {
+    actions.push({
+      num: actions.length + 1, urgency: 'Alta', tag: 'u-high',
+      title: '🌍 Crear página dedicada a Visa Estudiante',
+      desc: 'NINGÚN competidor menciona explícitamente la visa de estudios. ESATUR puede posicionarse como el único centro con acompañamiento visa completo (NIE, TIE, autorización de estancia). Publicar landing page específica esta semana.'
+    });
+  } else {
+    actions.push({
+      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
+      title: '🌍 Mejorar comunicación sobre Visa Estudiante',
+      desc: `${withVisa.length} competidor(es) ya mencionan la visa. ESATUR debe destacar con un servicio de acompañamiento más completo o con testimonios de estudiantes internacionales.`
+    });
+  }
+
+  if (withInsta.length > 0) {
+    actions.push({
+      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
+      title: '📸 Reforzar presencia Instagram',
+      desc: `${withInsta.length} competidor(es) tienen Instagram activo. Publicar 3-4 veces/semana: stories de alumnos trabajando, reels de prácticas en hoteles, posts de vida en Alicante para atraer estudiantes internacionales.`
+    });
+  }
+
+  // Raisons négatives → actions
+  const negCounts = {};
+  records.forEach(r => {
+    if (r.fields['Raisons négatives']) {
+      r.fields['Raisons négatives'].split(',').forEach(reason => {
+        const k = reason.trim();
+        if (k) negCounts[k] = (negCounts[k]||0) + 1;
+      });
+    }
+  });
+  const topNeg = Object.entries(negCounts).sort((a,b)=>b[1]-a[1])[0];
+  if (topNeg) {
+    actions.push({
+      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
+      title: `💬 Comunicar ventaja: evitar "${topNeg[0]}"`,
+      desc: `La queja más frecuente en la competencia es "${topNeg[0]}" (${topNeg[1]} menciones). Destacar en la web y redes que ESATUR garantiza exactamente lo contrario. Crear contenido de prueba (testimonios, fotos, estadísticas).`
+    });
+  }
+
+  if (!actions.length) {
+    actions.push({
+      num: 1, urgency: 'Baja', tag: 'u-low',
+      title: '✅ Semana sin alertas críticas',
+      desc: 'No se detectaron cambios críticos esta semana. Aprovechar para revisar el posicionamiento general y preparar contenido de comunicación.'
+    });
+  }
+
+  document.getElementById('actionsBody').innerHTML = actions.map(a => `
+    <div class="action-item">
+      <div class="action-num">${a.num}</div>
+      <div class="action-body">
+        <div class="action-title">${a.title}</div>
+        <div class="action-desc">${a.desc}</div>
+        <div class="action-meta">
+          <span class="urgency ${a.tag}">Urgencia: ${a.urgency}</span>
         </div>
-      </td></tr>`;
-      return;
-    }
+      </div>
+    </div>
+  `).join('');
+}
 
-    tbody.innerHTML = rows.map(r => {
-      const f = r.fields;
-      // "Titre" = nom_concurrent + semaine (ex: "Air Hostess Alicante - 2026-W19")
-      const titre = f['Titre'] || f.titre || '—';
-      const nom = titre.split(' - ')[0] || titre; // Extraire juste le nom concurrent
-      // Chercher le secteur dans la liste des concurrents chargés
-      const concurrentNom = f.concurrent || (Array.isArray(f['Concurrent']) ? f['Concurrent'].map(c => c.name).join(', ') : '');
-      const concObj = state.concurrents.find(c => c.nom === concurrentNom || titre.startsWith(c.nom));
-      const secteur = concObj ? concObj.secteur : '';
-      const source = f['Source'] || '';
-      const type = f['Type de changement'] || '';
-      const contenu = f['Contenu détecté'] || '';
-      const score = f['Score importance'] || 0;
-      const statut = f['Statut'] || '';
-      const date = f['Date détection'] || '';
-      const lien = f['Lien source'] || '';
+// ── HELPERS ──
+function extractSector(contenu) {
+  const m = contenu.match(/SECTEUR:\s*([^\n]+)/);
+  return m ? m[1].trim() : '—';
+}
 
-      const typeClass = type.toLowerCase().includes('prix') ? 'prix' : type.toLowerCase().includes('formation') ? 'formation' : type.toLowerCase().includes('promo') ? 'promo' : '';
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-      return `<tr>
-        <td><strong>${nom}</strong><br><span style="color:var(--text-muted);font-size:11px">${secteur}</span></td>
-        <td class="td-source"><span class="source-badge ${source}">${source}</span></td>
-        <td><span class="type-badge ${typeClass}">${type}</span></td>
-        <td class="td-content"><p>${contenu.replace(/\n/g, '<br>')}</p></td>
-        <td><span class="score-badge score-${score}">⚡ ${score}/5</span></td>
-        <td><span class="statut-badge ${statut}">${statut}</span></td>
-        <td class="td-date">${formatDate(date)}</td>
-        <td class="td-link">${lien ? `<a href="${lien}" target="_blank">↗ Voir</a>` : '—'}</td>
-      </tr>`;
-    }).join('');
-  }
-
-  // ===== FILTERS =====
-  function applyFilters() {
-    state.selectedWeek = document.getElementById('weekSelect').value;
-    const allRecords = state.allVeille;
-    if (state.selectedWeek) {
-      state.veille = allRecords.filter(r => r.fields['Semaine'] === state.selectedWeek);
-    } else {
-      state.veille = allRecords;
-    }
-
-    // Update stats
-    const filteredStats = {
-      stats: {
-        urgents: state.veille.filter(r => (r.fields['Score importance'] || 0) >= 4).length,
-        nouveaux: state.veille.filter(r => r.fields['Statut'] === 'Nouveau').length,
-        instagram: state.veille.filter(r => r.fields['Source'] === 'Instagram').length,
-        facebook: state.veille.filter(r => r.fields['Source'] === 'Facebook').length
-      }
-    };
-
-    renderStats(filteredStats, state.veille);
-    renderTable();
-  }
-
-  function toggleSource(chip) {
-    const source = chip.dataset.source;
-    if (state.selectedSource === source) {
-      state.selectedSource = null;
-      chip.classList.remove('active');
-    } else {
-      document.querySelectorAll('.chip[data-source]').forEach(c => c.classList.remove('active'));
-      state.selectedSource = source;
-      chip.classList.add('active');
-    }
-    // Re-filter table
-    if (state.selectedSource) {
-      state.veille = state.allVeille.filter(r => {
-        const weekMatch = !state.selectedWeek || r.fields['Semaine'] === state.selectedWeek;
-        const sourceMatch = r.fields['Source'] === state.selectedSource;
-        return weekMatch && sourceMatch;
-      });
-    } else {
-      state.veille = state.allVeille.filter(r => !state.selectedWeek || r.fields['Semaine'] === state.selectedWeek);
-    }
-    renderStats({stats:{}}, state.veille);
-    renderTable();
-  }
-
-  function filterTable() { renderTable(); }
-
-  // ===== INIT =====
-  loadAll();
+// ── INIT ──
+loadAll();
 </script>
-
 </body>
 </html>
