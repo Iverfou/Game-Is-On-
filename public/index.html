@@ -122,7 +122,7 @@
 
     <!-- Feed / Grid de registros -->
     <div class="bg-white p-6 rounded-xl border border-gray-200/80 shadow-sm">
-      <h2 class="text-base font-bold text-gray-900 mb-4">Registros de </h2>
+      <h2 class="text-base font-bold text-gray-900 mb-4">Registros de Veille</h2>
       <div id="recordsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <p class="text-xs text-gray-400 col-span-full">Cargando datos...</p>
       </div>
@@ -134,22 +134,19 @@
     // ==========================================
     // 1. CONFIGURACIÓN DE CONEXIÓN AIRTABLE
     // ==========================================
-    var AT_TOKEN  = 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926'; 
-    var AT_BASE   = 'appTrL6dyikqGxZe4';
-    var TABLE_CONC   = 'tblSiGUsTuXpEwioY'; // Tabla Concurrencia
-    var TABLE_ = 'tbl13Y1eW54aqPTxG'; // Tabla 
-
-    // Exponer explícitamente en el objeto window para evitar ReferenceError
-    window.AT_TOKEN = AT_TOKEN;
-    window.AT_BASE = AT_BASE;
-    window.TABLE_CONC = TABLE_CONC;
-    window.AT_ = AT_;
+    // IMPORTANT: for a production deployment, move this token to a backend.
+    window.AIRTABLE_CONFIG = {
+      TOKEN: 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926',
+      BASE: 'appTrL6dyikqGxZe4',
+      TABLE_VEILLE: 'tbl13Y1eW54aqPTxG',
+      TABLE_CONC: 'tblSiGUsTuXpEwioY'
+    };
 
     // ==========================================
     // 2. INITIALIZACIÓN DE VARIABLES GLOBALES
     // ==========================================
-    window.AT__DATA = [];
-    window.TABLE_CONCURRENTS_DATA = [];
+    window.AT_VEILLE = [];
+    window.AT_CONCURRENTS = [];
     window.allRecords = [];
     window.allCompetitors = [];
 
@@ -157,22 +154,47 @@
     // 3. RECUPERACIÓN DE DATOS (AIRTABLE FETCH)
     // ==========================================
     async function atFetchAll(tableId) {
+      const cfg = window.AIRTABLE_CONFIG;
+
+      if (!cfg || !cfg.TOKEN || !cfg.BASE || !tableId) {
+        throw new Error('Configuración Airtable incompleta.');
+      }
+
       let records = [];
-      let offset = '';
+      let offset = null;
 
       do {
-        const url = `https://api.airtable.com/v0/${window.AT_BASE}/${tableId}` + (offset ? `?offset=${offset}` : '');
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${window.AT_TOKEN}` }
+        const url = new URL(
+          `https://api.airtable.com/v0/${encodeURIComponent(cfg.BASE)}/${encodeURIComponent(tableId)}`
+        );
+
+        if (offset) {
+          url.searchParams.set('offset', offset);
+        }
+
+        const res = await fetch(url.toString(), {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${cfg.TOKEN}`,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (!res.ok) {
-          throw new Error(`Airtable error ${res.status}: ${res.statusText}`);
+          let detail = '';
+          try {
+            const errorData = await res.json();
+            detail = errorData?.error?.message || '';
+          } catch (_) {}
+
+          throw new Error(
+            `Airtable ${res.status}${detail ? ': ' + detail : ': ' + res.statusText}`
+          );
         }
 
         const data = await res.json();
         records = records.concat(data.records || []);
-        offset = data.offset;
+        offset = data.offset || null;
       } while (offset);
 
       return records;
@@ -182,8 +204,8 @@
     // 4. LÓGICA DE RENDERING
     // ==========================================
     function renderKPIs() {
-      const records = window.AT__DATA || [];
-      const competitors = window.TABLE_CONCURRENTS_DATA || [];
+      const records = window.AT_VEILLE || [];
+      const competitors = window.AT_CONCURRENTS || [];
 
       const alertasCount = records.filter(r => (r.fields?.Prioridad || '').toLowerCase().includes('alta') || (r.fields?.Alerta === true)).length;
       const senalesCount = records.length;
@@ -198,9 +220,9 @@
       document.getElementById('kpiInstagram').textContent = instagramCount;
     }
 
-    function renderGrid() {
+    function renderGrid(recordsOverride = null) {
       const grid = document.getElementById('recordsGrid');
-      const records = window.AT__DATA || [];
+      const records = recordsOverride || window.AT_VEILLE || [];
 
       if (records.length === 0) {
         grid.innerHTML = `<p class="text-xs text-gray-500 col-span-full">No hay registros disponibles.</p>`;
@@ -225,8 +247,54 @@
       }).join('');
     }
 
+    function populateFilters() {
+      const records = window.AT_VEILLE || [];
+
+      const values = {
+        filterSemana: [...new Set(records.map(r => String(r.fields?.Semana || r.fields?.Week || '')).filter(Boolean))],
+        filterArea: [...new Set(records.map(r => String(r.fields?.Area || r.fields?.Área || '')).filter(Boolean))],
+        filterPrioridad: [...new Set(records.map(r => String(r.fields?.Prioridad || '')).filter(Boolean))],
+        filterEstado: [...new Set(records.map(r => String(r.fields?.Estado || '')).filter(Boolean))]
+      };
+
+      Object.entries(values).forEach(([id, items]) => {
+        const select = document.getElementById(id);
+        const firstOption = select.options[0];
+        select.innerHTML = '';
+        select.appendChild(firstOption);
+
+        items.sort((a, b) => a.localeCompare(b, 'es')).forEach(value => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = value;
+          select.appendChild(option);
+        });
+      });
+    }
+
     function applyFilters() {
-      renderGrid();
+      const records = window.AT_VEILLE || [];
+
+      const semana = document.getElementById('filterSemana').value;
+      const area = document.getElementById('filterArea').value;
+      const prioridad = document.getElementById('filterPrioridad').value;
+      const estado = document.getElementById('filterEstado').value;
+
+      const filtered = records.filter(r => {
+        const f = r.fields || {};
+
+        const semanaValue = String(f.Semana || f.Week || f['Semana'] || '');
+        const areaValue = String(f.Area || f.Área || '');
+        const prioridadValue = String(f.Prioridad || '');
+        const estadoValue = String(f.Estado || '');
+
+        return (!semana || semanaValue === semana) &&
+               (!area || areaValue === area) &&
+               (!prioridad || prioridadValue === prioridad) &&
+               (!estado || estadoValue === estado);
+      });
+
+      renderGrid(filtered);
     }
 
     async function loadAll() {
@@ -237,23 +305,31 @@
       connBadge.classList.add('hidden');
 
       try {
-        const [Data, concData] = await Promise.all([
-          atFetchAll(window.TABLE_VEILLE),
-          atFetchAll(window.TABLE_CONC)
+        const cfg = window.AIRTABLE_CONFIG;
+
+        const [veilleData, concData] = await Promise.all([
+          atFetchAll(cfg.TABLE_VEILLE),
+          atFetchAll(cfg.TABLE_CONC)
         ]);
 
-        window.AT__DATA = Data;
-        window.TABLE_CONCURRENTS_DATA = concData;
-        window.allRecords = Data;
+        window.AT_VEILLE = veilleData;
+        window.AT_CONCURRENTS = concData;
+        window.allRecords = veilleData;
         window.allCompetitors = concData;
 
         renderKPIs();
+        populateFilters();
         renderGrid();
+
+        // Successful connection: keep the warning hidden.
+        console.log(`Airtable conectado: ${veilleData.length} registros de Veille y ${concData.length} competidores.`);
 
       } catch (err) {
         console.error('Error al cargar datos de Airtable:', err);
         connBadge.classList.remove('hidden');
-        errBox.textContent = `Error de conexión con Airtable: ${err.message}`;
+        errBox.textContent =
+          `Error de conexión con Airtable: ${err.message}. ` +
+          `Si el archivo está abierto directamente como file://, ábrelo desde un servidor local (por ejemplo VS Code Live Server).`;
         errBox.classList.remove('hidden');
       }
     }
