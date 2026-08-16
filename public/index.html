@@ -358,15 +358,15 @@
 </div>
 
 <script>
-// ── CONFIGURATION ──
+// ── CONFIGURATION & VARIABLES GLOBALES ──
 const API_VEILLE = '/api/veille';
 const API_CONC   = '/api/concurrents';
 
-// Déclarations des variables globales
-let AT_VEILLE = [];
-let AT_CONCURRENTS = [];
-
-let allRecords = [], allCompetitors = [];
+// Déclaration explicite des variables attendues
+var AT_VEILLE = [];
+var AT_CONCURRENTS = [];
+var allRecords = [];
+var allCompetitors = [];
 
 // ── FETCH HELPERS ──
 async function apiFetch(endpoint, params = {}) {
@@ -557,10 +557,11 @@ function renderPrices() {
 
 // ── REVIEW ANALYSIS ──
 function renderReviews(records) {
-  const currentRecords = records || (typeof AT_VEILLE !== 'undefined' ? AT_VEILLE : []);
+  const currentRecords = records || allRecords || [];
   const withAvis = currentRecords.filter(r => r.fields && r.fields['Avis clients']);
   const withReco = currentRecords.filter(r => r.fields && r.fields['Recommandation action']);
   document.getElementById('reviewCount').textContent = withAvis.length + ' con avis';
+  ...
 
   // Avis clients
   if (withAvis.length) {
