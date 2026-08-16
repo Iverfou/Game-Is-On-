@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ESATUR — Vigilancia Competitiva Alicante</title>
+<title>ML Lawyers — Vigilancia Competitiva Alicante</title>
 <style>
   :root {
     --navy: #0f2342;
@@ -165,10 +165,10 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-left">
-    <div class="logo">E</div>
+    <div class="logo">ML</div>
     <div>
       <h1>Vigilancia Competitiva — Alicante</h1>
-      <div class="sub">ESATUR · Hostelería · Turismo · TCP · Hospitalidad</div>
+      <div class="sub">ML Lawyers · Inmigración Económica · Familiar · Estudiantes · Golden Visa</div>
     </div>
   </div>
   <div class="header-right">
@@ -185,11 +185,14 @@
     <option value="">Todas las semanas</option>
   </select>
   <select id="filterSector" onchange="applyFilters()">
-    <option value="">Todos los sectores</option>
-    <option value="Hostelería">Hostelería / Turismo</option>
-    <option value="TCP">TCP / Aeronáutica</option>
-    <option value="Hospitalidad">Hospitalidad / Eventos</option>
-    <option value="Visa">Formación + Visa</option>
+    <option value="">Todas las áreas</option>
+    <option value="Económica">Inmigración Económica</option>
+    <option value="Golden Visa">Golden Visa / Inversión</option>
+    <option value="Regroupement">Regroupement Familial</option>
+    <option value="Étudiant">Estudiantes</option>
+    <option value="Nationalité">Nacionalidad</option>
+    <option value="Nomade">Nómada Digital</option>
+    <option value="Non Lucratif">No Lucrativo</option>
   </select>
   <select id="filterScore" onchange="applyFilters()">
     <option value="">Todas las prioridades</option>
@@ -210,11 +213,11 @@
 
   <!-- KPI ROW -->
   <div class="kpi-grid" id="kpiGrid">
-    <div class="kpi red"><div class="kpi-icon">🚨</div><div class="kpi-value" id="kpiCritical">—</div><div class="kpi-label">Alertas críticas</div><div class="kpi-sub">Precio / Duración cambiados</div></div>
+    <div class="kpi red"><div class="kpi-icon">🚨</div><div class="kpi-value" id="kpiCritical">—</div><div class="kpi-label">Alertas críticas</div><div class="kpi-sub">Precio / Servicio cambiados</div></div>
     <div class="kpi blue"><div class="kpi-icon">📡</div><div class="kpi-value" id="kpiSignals">—</div><div class="kpi-label">Señales esta semana</div><div class="kpi-sub">Cambios detectados</div></div>
-    <div class="kpi green"><div class="kpi-icon">🏫</div><div class="kpi-value" id="kpiCompetitors">—</div><div class="kpi-label">Competidores</div><div class="kpi-sub">Sitios monitorizados</div></div>
-    <div class="kpi gold"><div class="kpi-icon">🌍</div><div class="kpi-value" id="kpiVisa">—</div><div class="kpi-label">Mencionan visa</div><div class="kpi-sub">Oportunidad de mercado</div></div>
-    <div class="kpi purple"><div class="kpi-icon">📸</div><div class="kpi-value" id="kpiInsta">—</div><div class="kpi-label">Con Instagram</div><div class="kpi-sub">Presencia digital detectada</div></div>
+    <div class="kpi green"><div class="kpi-icon">⚖️</div><div class="kpi-value" id="kpiCompetitors">—</div><div class="kpi-label">Despachos</div><div class="kpi-sub">Competidores monitorizados</div></div>
+    <div class="kpi gold"><div class="kpi-icon">🎓</div><div class="kpi-value" id="kpiVisa">—</div><div class="kpi-label">Ofrecen Visa Estudiante</div><div class="kpi-sub">Vía de regularización clave en Alicante</div></div>
+    <div class="kpi purple"><div class="kpi-icon">📸</div><div class="kpi-value" id="kpiInsta">—</div><div class="kpi-label">Con Instagram</div><div class="kpi-sub">Presencia digital activa</div></div>
   </div>
 
   <!-- ROW 1: Precios + Avis -->
@@ -223,17 +226,17 @@
     <!-- PRECIOS -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">💰 Comparativa de Precios</div>
+        <div class="card-title">⚖️ Directorio de Despachos</div>
         <span class="card-badge badge-blue" id="priceCount">—</span>
       </div>
       <div class="card-body" style="padding:0">
         <table class="price-table" id="priceTable">
           <thead>
             <tr>
-              <th>Competidor</th>
-              <th>Sector</th>
-              <th>Precios detectados</th>
-              <th>Duración</th>
+              <th>Despacho</th>
+              <th>Especialización</th>
+              <th>Precio observado</th>
+              <th>Valoración</th>
             </tr>
           </thead>
           <tbody id="priceBody">
@@ -251,20 +254,20 @@
       </div>
       <div class="card-body">
         <div class="review-section review-positive">
-          <div class="review-section-title">✅ Lo que valoran los estudiantes</div>
+          <div class="review-section-title">💬 Avis clients detectados</div>
           <div id="posReasons">
             <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
           </div>
           <div class="insight-box" id="posInsight" style="display:none">
-            <strong>💡 Para ESATUR:</strong> <span id="posInsightText"></span>
+            <strong>💡 Para ML Lawyers:</strong> <span id="posInsightText"></span>
           </div>
         </div>
         <div class="review-section review-negative" style="margin-top:16px">
-          <div class="review-section-title">⚠️ Lo que decepciona / Puntos de mejora</div>
+          <div class="review-section-title">🤖 Recomendaciones IA (Claude)</div>
           <div id="negReasons">
           </div>
           <div class="insight-box" id="negInsight" style="display:none; background:#fff5f5; border-color: var(--accent)">
-            <strong>💡 Para ESATUR:</strong> <span id="negInsightText"></span>
+            <strong>💡 Para ML Lawyers:</strong> <span id="negInsightText"></span>
           </div>
         </div>
       </div>
@@ -278,7 +281,7 @@
     <!-- INSTAGRAM -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">📸 Presencia Instagram Competidores</div>
+        <div class="card-title">📸 Redes Sociales de Despachos</div>
         <span class="card-badge badge-gold">Digital</span>
       </div>
       <div class="card-body">
@@ -286,7 +289,7 @@
           <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
         </div>
         <div class="insight-box" style="margin-top:12px">
-          <strong>💡 Para ESATUR:</strong> Si los competidores tienen Instagram activo, publicar contenido regular (3-4x/semana) sobre éxito de alumnos, prácticas, empleo + vida en Alicante para estudiantes internacionales.
+          <strong>💡 Para ML Lawyers:</strong> Los despachos activos en Instagram publican reels explicativos (Golden Visa, NIE, TIE, arraigo). Mantener publicación regular (3-4x/semana) con casos de éxito y FAQ de extranjería para captar clientela internacional.
         </div>
       </div>
     </div>
@@ -294,7 +297,7 @@
     <!-- VISA ÉTUDIANT -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">🌍 Visa de Estudios — Oportunidad</div>
+        <div class="card-title">🎓 Visa de Estudios — Competencia</div>
         <span class="card-badge badge-blue" id="visaBadge">—</span>
       </div>
       <div class="card-body">
@@ -302,7 +305,7 @@
           <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
         </div>
         <div class="insight-box" id="visaInsight" style="margin-top:12px; display:none">
-          <strong>💡 Oportunidad:</strong> <span id="visaInsightText">Pocos competidores mencionan la visa de estudiante. ESATUR puede diferenciarse ofreciendo acompañamiento visa (NIE, TIE, autorización de estancia) para estudiantes internacionales.</span>
+          <strong>💡 Mercado clave:</strong> <span id="visaInsightText">En Alicante, muchos turistas que quieren quedarse optan por la vía del visado de estudiante por ser la más accesible, pero su complejidad administrativa los lleva a contratar un despacho. ML Lawyers debe posicionarse fuerte en esta línea de negocio de alta demanda.</span>
         </div>
       </div>
     </div>
@@ -325,11 +328,9 @@
         <thead>
           <tr>
             <th>P</th>
-            <th>Competidor</th>
+            <th>Despacho</th>
             <th>Tipo</th>
-            <th>Precio</th>
-            <th>Visa</th>
-            <th>Instagram</th>
+            <th>Fuente</th>
             <th>Resumen</th>
             <th>Estado</th>
             <th>Semana</th>
@@ -359,7 +360,7 @@
 <script>
 // ── CONFIGURATION ──
 const AT_TOKEN = 'patLcCvV71GyvB4sq.6da2d2692b015ffc03cbdd0bb20b8a01b74bd09c48f78cb41b3d0b513ec36522';
-const AT_BASE  = 'app89E8GwOlsSeE0X';
+const AT_BASE  = 'appTrL6dyikqGxZe4';
 const AT_CONC  = 'tblSiGUsTuXpEwioY';
 const AT_VEILLE= 'tbl13Y1eW54aqPTxG';
 
@@ -420,6 +421,12 @@ function showError(msg) {
 }
 
 // ── FILTERS ──
+function concurrentName(f) {
+  const c = f['Concurrent'];
+  if (Array.isArray(c)) return c[0] || '?';
+  return c || f['Titre']?.split('—')[0]?.trim() || '?';
+}
+
 function applyFilters() {
   const semana  = document.getElementById('filterSemana').value;
   const sector  = document.getElementById('filterSector').value;
@@ -430,11 +437,14 @@ function applyFilters() {
   const filtered = allRecords.filter(r => {
     const f = r.fields;
     if (semana && f['Semaine'] !== semana) return false;
-    if (sector && !(f['Contenu détecté']||'').toLowerCase().includes(sector.toLowerCase())) return false;
+    if (sector) {
+      const hayCampos = ((f['Contenu détecté']||'') + ' ' + (f['Résumé Claude']||'') + ' ' + (f['Titre']||'')).toLowerCase();
+      if (!hayCampos.includes(sector.toLowerCase())) return false;
+    }
     if (score  && String(f['Score importance']) !== score) return false;
     if (status && f['Statut'] !== status) return false;
     if (search) {
-      const hay = (f['Titre']||'' + f['Contenu détecté']||'' + f['Type de changement']||'').toLowerCase();
+      const hay = ((f['Titre']||'') + (f['Contenu détecté']||'') + (f['Résumé Claude']||'') + (f['Type de changement']||'') + concurrentName(f)).toLowerCase();
       if (!hay.includes(search)) return false;
     }
     return true;
@@ -450,11 +460,16 @@ function applyFilters() {
 }
 
 // ── KPIs ──
+function offersStudentVisa(f) {
+  const txt = ((f['Types de services proposés']||'') + ' ' + (f['Spécialisation']||'') + ' ' + (f['Packs & Formules']||'')).toLowerCase();
+  return txt.includes('étudiant') || txt.includes('estudiante') || txt.includes('student');
+}
+
 function renderKPIs(records) {
   const critical   = records.filter(r => r.fields['Score importance'] >= 4).length;
   const thisWeek   = records.length;
-  const withVisa   = records.filter(r => r.fields['Visa Étudiant Mentionné']).length;
-  const withInsta  = records.filter(r => r.fields['Instagram Handle']).length;
+  const withVisa   = allCompetitors.filter(r => offersStudentVisa(r.fields)).length;
+  const withInsta  = allCompetitors.filter(r => r.fields['Instagram Handle']).length;
 
   document.getElementById('kpiCritical').textContent    = critical;
   document.getElementById('kpiSignals').textContent     = thisWeek;
@@ -465,27 +480,26 @@ function renderKPIs(records) {
 }
 
 // ── PRICES TABLE ──
-function renderPrices(records) {
-  const withPrices = records.filter(r => r.fields['Prix détectés']);
-  document.getElementById('priceCount').textContent = withPrices.length + ' con precios';
+function renderPrices() {
+  const list = allCompetitors;
+  document.getElementById('priceCount').textContent = list.length + ' despachos';
 
-  if (!withPrices.length) {
+  if (!list.length) {
     document.getElementById('priceBody').innerHTML =
-      `<tr><td colspan="4"><div class="empty-state"><div class="icon">💰</div>No se detectaron precios esta semana.<br><small>Verifica manualmente los sitios web.</small></div></td></tr>`;
+      `<tr><td colspan="4"><div class="empty-state"><div class="icon">⚖️</div>No hay despachos activos en el directorio.</div></td></tr>`;
     return;
   }
 
-  const rows = withPrices.map(r => {
+  const rows = list.map(r => {
     const f = r.fields;
-    const prices = (f['Prix détectés']||'').split('|').map(p => p.trim()).filter(Boolean);
-    const sector = extractSector(f['Contenu détecté']||'');
-    const score  = f['Score importance'] || 0;
-    const priceTags = prices.map(p => `<span class="price-tag">${esc(p)}</span>`).join(' ');
+    const nombre = f['Nom du cabinet'] || '?';
+    const web    = f['Site Web'] ? `<br><a href="${esc(f['Site Web'])}" target="_blank" style="color:var(--blue);font-size:11px">Sitio →</a>` : '';
+    const precio = f['Prix observés'] ? `<span class="price-tag">${esc(f['Prix observés'])}</span>` : '<span class="no-price">Sur devis / no indicado</span>';
     return `<tr>
-      <td><strong>${esc(f['Titre']?.split('—')[0]?.trim()||'?')}</strong></td>
-      <td><small>${esc(sector)}</small></td>
-      <td>${priceTags || '<span class="no-price">No detectado</span>'}</td>
-      <td><small>${esc(f['Durées détectées']||'—')}</small></td>
+      <td><strong>${esc(nombre)}</strong>${web}</td>
+      <td><small>${esc(f['Spécialisation']||'—')}</small></td>
+      <td>${precio}</td>
+      <td><small>${esc(f['Avis Google']||'—')}</small></td>
     </tr>`;
   });
   document.getElementById('priceBody').innerHTML = rows.join('');
@@ -493,104 +507,90 @@ function renderPrices(records) {
 
 // ── REVIEW ANALYSIS ──
 function renderReviews(records) {
-  const withReviews = records.filter(r => r.fields['Raisons positives'] || r.fields['Raisons négatives']);
-  document.getElementById('reviewCount').textContent = withReviews.length + ' con opiniones';
+  const withAvis = records.filter(r => r.fields['Avis clients']);
+  const withReco = records.filter(r => r.fields['Recommandation action']);
+  document.getElementById('reviewCount').textContent = withAvis.length + ' con avis';
 
-  // Agrégation des raisons positives
-  const posCounts = {}, negCounts = {};
-  records.forEach(r => {
-    const f = r.fields;
-    if (f['Raisons positives']) {
-      f['Raisons positives'].split(',').forEach(reason => {
-        const k = reason.trim();
-        if (k) posCounts[k] = (posCounts[k]||0) + 1;
-      });
-    }
-    if (f['Raisons négatives']) {
-      f['Raisons négatives'].split(',').forEach(reason => {
-        const k = reason.trim();
-        if (k) negCounts[k] = (negCounts[k]||0) + 1;
-      });
-    }
-  });
-
-  // Positives
-  const posSorted = Object.entries(posCounts).sort((a,b)=>b[1]-a[1]);
-  if (posSorted.length) {
-    document.getElementById('posReasons').innerHTML = posSorted
-      .map(([r,c]) => `<span class="reason-tag pos">${esc(r)} <span class="count">${c}</span></span>`)
-      .join('');
-    const top = posSorted[0][0];
+  // Avis clients
+  if (withAvis.length) {
+    document.getElementById('posReasons').innerHTML = withAvis.slice(0, 8).map(r => {
+      const f = r.fields;
+      const txt = (f['Avis clients']||'').slice(0,180) + ((f['Avis clients']||'').length > 180 ? '…' : '');
+      return `<div class="reason-tag pos" style="display:block;white-space:normal;line-height:1.4;margin:6px 0">
+        <strong>${esc(concurrentName(f))}</strong> — ${esc(txt)}
+      </div>`;
+    }).join('');
     document.getElementById('posInsight').style.display = 'block';
     document.getElementById('posInsightText').textContent =
-      `Los estudiantes valoran especialmente "${top}". ESATUR debería destacarlo en su comunicación y web.`;
+      `${withAvis.length} avis de clientes detectados esta semana en la competencia. Revisar tendencias recurrentes para ajustar el argumentario de ML Lawyers.`;
   } else {
-    document.getElementById('posReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron opiniones positivas</div>';
+    document.getElementById('posReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron avis clientes esta semana</div>';
   }
 
-  // Negatives
-  const negSorted = Object.entries(negCounts).sort((a,b)=>b[1]-a[1]);
-  if (negSorted.length) {
-    document.getElementById('negReasons').innerHTML = negSorted
-      .map(([r,c]) => `<span class="reason-tag neg">${esc(r)} <span class="count">${c}</span></span>`)
-      .join('');
-    const top = negSorted[0][0];
-    document.getElementById('negInsight').style.display = 'block';
-    document.getElementById('negInsightText').textContent =
-      `El mayor punto de queja es "${top}". ESATUR puede diferenciarse asegurando exactamente este aspecto y comunicándolo claramente.`;
+  // Recomendaciones IA
+  if (withReco.length) {
+    const sorted = [...withReco].sort((a,b) => (b.fields['Score importance']||0) - (a.fields['Score importance']||0));
+    document.getElementById('negReasons').innerHTML = sorted.slice(0, 8).map(r => {
+      const f = r.fields;
+      const txt = (f['Recommandation action']||'').slice(0,180) + ((f['Recommandation action']||'').length > 180 ? '…' : '');
+      return `<div class="reason-tag neg" style="display:block;white-space:normal;line-height:1.4;margin:6px 0">
+        <strong>${esc(concurrentName(f))}</strong> — ${esc(txt)}
+      </div>`;
+    }).join('');
+    document.getElementById('negInsight').style.display = 'none';
   } else {
-    document.getElementById('negReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron quejas</div>';
+    document.getElementById('negReasons').innerHTML = '<div class="empty-state" style="padding:12px">Sin recomendaciones IA esta semana</div>';
   }
 }
 
 // ── INSTAGRAM ──
-function renderInstagram(records) {
-  const withInsta = records.filter(r => r.fields['Instagram Handle']);
-  const unique = {};
-  withInsta.forEach(r => {
-    const f = r.fields;
-    const handle = f['Instagram Handle'];
-    if (handle && !unique[handle]) unique[handle] = f;
-  });
+function renderInstagram() {
+  const withInsta = allCompetitors.filter(r => r.fields['Instagram Handle']);
 
-  const items = Object.entries(unique);
-  if (!items.length) {
+  if (!withInsta.length) {
     document.getElementById('instaList').innerHTML =
-      `<div class="empty-state"><div class="icon">📸</div>No se detectó Instagram esta semana</div>`;
+      `<div class="empty-state"><div class="icon">📸</div>Ningún despacho con Instagram detectado</div>`;
     return;
   }
 
-  document.getElementById('instaList').innerHTML = items.map(([handle, f]) => `
+  document.getElementById('instaList').innerHTML = withInsta.map(r => {
+    const f = r.fields;
+    const handle = f['Instagram Handle'];
+    const links = [
+      f['Facebook URL'] ? `<a href="${esc(f['Facebook URL'])}" target="_blank" class="insta-link">Facebook</a>` : '',
+      f['LinkedIn URL'] ? `<a href="${esc(f['LinkedIn URL'])}" target="_blank" class="insta-link">LinkedIn</a>` : ''
+    ].filter(Boolean).join(' · ');
+    return `
     <div class="insta-item">
       <div>
-        <div class="insta-name">${esc(f['Titre']?.split('—')[0]?.trim()||handle)}</div>
+        <div class="insta-name">${esc(f['Nom du cabinet']||handle)}</div>
         <div class="insta-handle">@${esc(handle)}</div>
-        ${f['Instagram Activité'] ? `<div class="insta-status" style="color:var(--green);font-size:11px;margin-top:2px">🟢 ${esc(f['Instagram Activité'])}</div>` : ''}
+        ${links ? `<div class="insta-status" style="font-size:11px;margin-top:2px">${links}</div>` : ''}
       </div>
-      <a href="https://www.instagram.com/${esc(handle)}/" target="_blank" class="insta-link">Ver perfil →</a>
-    </div>
-  `).join('');
+      <a href="${esc(f['Instagram URL']) || 'https://www.instagram.com/'+esc(handle)+'/'}" target="_blank" class="insta-link">Ver perfil →</a>
+    </div>`;
+  }).join('');
 }
 
 // ── VISA ──
-function renderVisa(records) {
-  const withVisa = records.filter(r => r.fields['Visa Étudiant Mentionné']);
-  const without  = records.filter(r => !r.fields['Visa Étudiant Mentionné'] && r.fields['Titre']);
+function renderVisa() {
+  const withVisa = allCompetitors.filter(r => offersStudentVisa(r.fields));
+  const without  = allCompetitors.filter(r => !offersStudentVisa(r.fields));
 
-  document.getElementById('visaBadge').textContent = withVisa.length + ' lo mencionan';
+  document.getElementById('visaBadge').textContent = withVisa.length + '/' + allCompetitors.length + ' la ofrecen';
 
   let html = '';
   if (withVisa.length) {
     html += withVisa.map(r => `
       <div class="visa-item visa-yes">
-        <div class="visa-label">✅ ${esc(r.fields['Titre']?.split('—')[0]?.trim()||'?')} — Menciona visa</div>
-        ${r.fields['Visa Contexte'] ? `<div class="visa-context">${esc(r.fields['Visa Contexte'].slice(0,200))}...</div>` : ''}
+        <div class="visa-label">✅ ${esc(r.fields['Nom du cabinet']||'?')} — Ofrece Visa Estudiante</div>
+        <div class="visa-context">${esc((r.fields['Types de services proposés']||'').slice(0,160))}</div>
       </div>
     `).join('');
   }
   if (without.length) {
-    const names = [...new Set(without.map(r => r.fields['Titre']?.split('—')[0]?.trim()))].filter(Boolean).slice(0,5);
-    html += `<div class="visa-item visa-no"><div class="visa-label">❌ No mencionan visa: ${names.map(esc).join(', ')}</div></div>`;
+    const names = without.map(r => r.fields['Nom du cabinet']).filter(Boolean).slice(0,5);
+    html += `<div class="visa-item visa-no"><div class="visa-label">➖ No la ofrecen explícitamente: ${names.map(esc).join(', ')}</div></div>`;
   }
   if (!html) html = '<div class="empty-state" style="padding:12px">Sin datos suficientes</div>';
 
@@ -599,15 +599,16 @@ function renderVisa(records) {
   // Insight
   const ins = document.getElementById('visaInsight');
   ins.style.display = 'block';
-  if (withVisa.length === 0) {
+  const ratio = allCompetitors.length ? withVisa.length / allCompetitors.length : 0;
+  if (ratio >= 0.5) {
     document.getElementById('visaInsightText').textContent =
-      'NINGÚN competidor menciona la visa de estudiante. Esta es una GRAN oportunidad de diferenciación para ESATUR atrayendo estudiantes internacionales.';
-  } else if (withVisa.length < records.length / 2) {
+      `${withVisa.length} de ${allCompetitors.length} despachos ya ofrecen la Visa Estudiante, la vía más usada por turistas que quieren regularizarse en Alicante. ML Lawyers debe diferenciarse por rapidez de gestión, tasa de éxito e idiomas.`;
+  } else if (withVisa.length > 0) {
     document.getElementById('visaInsightText').textContent =
-      `Solo ${withVisa.length} competidor(es) mencionan la visa. ESATUR puede posicionarse como el referente en formación para estudiantes internacionales en Alicante.`;
+      `Solo ${withVisa.length} despacho(s) ofrecen explícitamente la Visa Estudiante, pese a ser una vía de regularización muy demandada en Alicante. Margen para que ML Lawyers refuerce su posicionamiento en esta línea.`;
   } else {
     document.getElementById('visaInsightText').textContent =
-      'Varios competidores mencionan la visa. ESATUR debe destacar con un servicio de acompañamiento completo (NIE, TIE, alojamiento, integración).';
+      'Ningún competidor detectado promociona explícitamente la Visa Estudiante. Oportunidad clara de posicionamiento para ML Lawyers en esta vía de regularización de alta demanda.';
   }
 }
 
@@ -615,7 +616,7 @@ function renderVisa(records) {
 function renderSignals(records) {
   if (!records.length) {
     document.getElementById('signalsBody').innerHTML =
-      '<tr><td colspan="9"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
+      '<tr><td colspan="8"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
     return;
   }
 
@@ -626,12 +627,12 @@ function renderSignals(records) {
   const rows = records.map(r => {
     const f = r.fields;
     const score  = f['Score importance'] || 0;
-    const nom    = f['Titre']?.split('—')[0]?.trim() || '?';
+    const nom    = concurrentName(f);
     const type   = f['Type de changement'] || '—';
-    const prix   = f['Prix détectés'] || '';
-    const visa   = f['Visa Étudiant Mentionné'] ? '✅' : '—';
-    const insta  = f['Instagram Handle'] ? `@${esc(f['Instagram Handle'])}` : '—';
-    const resumen = (f['Contenu détecté']||'').replace(/\n/g,' ').slice(0,120) + (f['Contenu détecté']?.length > 120 ? '...' : '');
+    const fuente = f['Source'] || '—';
+    const resumen = (f['Résumé Claude'] || f['Contenu détecté'] || '').replace(/\n/g,' ').slice(0,140);
+    const resumenFull = f['Résumé Claude'] || f['Contenu détecté'] || '';
+    const resumenTxt = resumen + (resumenFull.length > 140 ? '...' : '');
     const statut = f['Statut'] || 'Nuevo';
     const semana = f['Semaine'] || '—';
     const link   = f['Lien source'] ? `<a href="${esc(f['Lien source'])}" target="_blank" style="color:var(--blue);font-size:11px">Ver →</a>` : '';
@@ -640,10 +641,8 @@ function renderSignals(records) {
       <td><span class="score-dot ${scoreClass(score)}"></span>${score}</td>
       <td><strong>${esc(nom)}</strong>${link ? '<br>' + link : ''}</td>
       <td><span class="type-chip ${typeClass(type)}">${esc(type)}</span></td>
-      <td style="font-size:12px">${prix ? esc(prix.split('|')[0]) : '<span class="no-price">—</span>'}</td>
-      <td style="text-align:center">${visa}</td>
-      <td style="font-size:12px;color:#c026d3">${insta}</td>
-      <td class="contenu-cell">${esc(resumen)}</td>
+      <td style="font-size:12px">${esc(fuente)}</td>
+      <td class="contenu-cell">${esc(resumenTxt)}</td>
       <td><span class="status-chip ${statusClass(statut)}">${esc(statut)}</span></td>
       <td style="font-size:12px;white-space:nowrap">${esc(semana)}</td>
     </tr>`;
@@ -655,30 +654,30 @@ function renderSignals(records) {
 // ── ACTIONS ──
 function renderActions(records) {
   const critical  = records.filter(r => r.fields['Score importance'] >= 4);
-  const withInsta = records.filter(r => r.fields['Instagram Handle']);
-  const withVisa  = records.filter(r => r.fields['Visa Étudiant Mentionné']);
+  const withInsta = allCompetitors.filter(r => r.fields['Instagram Handle']);
+  const withVisa  = allCompetitors.filter(r => offersStudentVisa(r.fields));
 
   const actions = [];
 
   if (critical.length) {
     actions.push({
       num: 1, urgency: 'Alta', tag: 'u-high',
-      title: `⚠️ Verificar ${critical.length} alerta(s) de precio/duración`,
-      desc: `Competidores con cambios críticos: ${critical.map(r => r.fields['Titre']?.split('—')[0]?.trim()).join(', ')}. Revisar si ESATUR debe ajustar su pricing o argumentario de venta.`
+      title: `⚠️ Verificar ${critical.length} alerta(s) de precio/servicio`,
+      desc: `Despachos con cambios críticos: ${critical.map(r => concurrentName(r.fields)).join(', ')}. Revisar si ML Lawyers debe ajustar sus honorarios o argumentario comercial.`
     });
   }
 
   if (withVisa.length === 0) {
     actions.push({
       num: actions.length + 1, urgency: 'Alta', tag: 'u-high',
-      title: '🌍 Crear página dedicada a Visa Estudiante',
-      desc: 'NINGÚN competidor menciona explícitamente la visa de estudios. ESATUR puede posicionarse como el único centro con acompañamiento visa completo (NIE, TIE, autorización de estancia). Publicar landing page específica esta semana.'
+      title: '🎓 Crear página dedicada a Visa Estudiante',
+      desc: 'Ningún competidor detectado promociona explícitamente la Visa Estudiante, pese a ser la vía más usada en Alicante por quienes quieren regularizarse. ML Lawyers puede posicionarse como referente en esta gestión. Publicar landing page específica esta semana.'
     });
   } else {
     actions.push({
-      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
-      title: '🌍 Mejorar comunicación sobre Visa Estudiante',
-      desc: `${withVisa.length} competidor(es) ya mencionan la visa. ESATUR debe destacar con un servicio de acompañamiento más completo o con testimonios de estudiantes internacionales.`
+      num: actions.length + 1, urgency: 'Alta', tag: 'u-high',
+      title: '🎓 Reforzar posicionamiento en Visa Estudiante',
+      desc: `${withVisa.length} despacho(s) ya ofrecen la Visa Estudiante, mercado clave en Alicante (turistas buscando regularizarse). ML Lawyers debe destacar rapidez de gestión, tasa de éxito e idiomas hablados frente a la competencia.`
     });
   }
 
@@ -686,28 +685,25 @@ function renderActions(records) {
     actions.push({
       num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
       title: '📸 Reforzar presencia Instagram',
-      desc: `${withInsta.length} competidor(es) tienen Instagram activo. Publicar 3-4 veces/semana: stories de alumnos trabajando, reels de prácticas en hoteles, posts de vida en Alicante para atraer estudiantes internacionales.`
+      desc: `${withInsta.length} despacho(s) tienen Instagram activo. Publicar 3-4 veces/semana: casos de éxito, reels explicativos (Golden Visa, NIE, TIE, arraigo), testimonios de clientes internacionales.`
     });
   }
 
-  // Raisons négatives → actions
-  const negCounts = {};
-  records.forEach(r => {
-    if (r.fields['Raisons négatives']) {
-      r.fields['Raisons négatives'].split(',').forEach(reason => {
-        const k = reason.trim();
-        if (k) negCounts[k] = (negCounts[k]||0) + 1;
-      });
-    }
-  });
-  const topNeg = Object.entries(negCounts).sort((a,b)=>b[1]-a[1])[0];
-  if (topNeg) {
+  // Recommandations IA (Airtable) → actions concrètes par despacho
+  const withReco = records
+    .filter(r => r.fields['Recommandation action'])
+    .sort((a,b) => (b.fields['Score importance']||0) - (a.fields['Score importance']||0))
+    .slice(0, 2);
+  withReco.forEach(r => {
+    const f = r.fields;
     actions.push({
-      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
-      title: `💬 Comunicar ventaja: evitar "${topNeg[0]}"`,
-      desc: `La queja más frecuente en la competencia es "${topNeg[0]}" (${topNeg[1]} menciones). Destacar en la web y redes que ESATUR garantiza exactamente lo contrario. Crear contenido de prueba (testimonios, fotos, estadísticas).`
+      num: actions.length + 1,
+      urgency: (f['Score importance']||0) >= 4 ? 'Alta' : (f['Score importance']||0) >= 3 ? 'Media' : 'Baja',
+      tag: (f['Score importance']||0) >= 4 ? 'u-high' : (f['Score importance']||0) >= 3 ? 'u-medium' : 'u-low',
+      title: `🤖 ${esc(concurrentName(f))}`,
+      desc: f['Recommandation action']
     });
-  }
+  });
 
   if (!actions.length) {
     actions.push({
@@ -732,11 +728,6 @@ function renderActions(records) {
 }
 
 // ── HELPERS ──
-function extractSector(contenu) {
-  const m = contenu.match(/SECTEUR:\s*([^\n]+)/);
-  return m ? m[1].trim() : '—';
-}
-
 function esc(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
