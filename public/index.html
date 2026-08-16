@@ -134,7 +134,6 @@
     // ==========================================
     // 1. CONFIGURACIÓN DE CONEXIÓN AIRTABLE
     // ==========================================
-    // Sustiuye por tus credenciales de Airtable
     const AT_TOKEN  = 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926'; 
     const AT_BASE   = 'appTrL6dyikqGxZe4';
     const AT_CONC   = 'tblSiGUsTuXpEwioY'; // Tabla Concurrencia
@@ -180,7 +179,6 @@
       const records = window.AT_VEILLE || [];
       const competitors = window.AT_CONCURRENTS || [];
 
-      // Ajusta los criterios según los campos exactos de tu Airtable
       const alertasCount = records.filter(r => (r.fields?.Prioridad || '').toLowerCase().includes('alta') || (r.fields?.Alerta === true)).length;
       const senalesCount = records.length;
       const despachosCount = competitors.length;
@@ -222,7 +220,6 @@
     }
 
     function applyFilters() {
-      // Función para aplicar los filtros seleccionados
       renderGrid();
     }
 
