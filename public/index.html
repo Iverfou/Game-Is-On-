@@ -134,16 +134,22 @@
     // ==========================================
     // 1. CONFIGURACIÓN DE CONEXIÓN AIRTABLE
     // ==========================================
-    const AT_TOKEN  = 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926'; 
-    const AT_BASE   = 'appTrL6dyikqGxZe4';
-    const AT_CONC   = 'tblSiGUsTuXpEwioY'; // Tabla Concurrencia
-    const AT_VEILLE = 'tbl13Y1eW54aqPTxG'; // Tabla Veille
+    var AT_TOKEN  = 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926'; 
+    var AT_BASE   = 'appTrL6dyikqGxZe4';
+    var AT_CONC   = 'tblSiGUsTuXpEwioY'; // Tabla Concurrencia
+    var AT_VEILLE = 'tbl13Y1eW54aqPTxG'; // Tabla Veille
+
+    // Exponer explícitamente en el objeto window para evitar ReferenceError
+    window.AT_TOKEN = AT_TOKEN;
+    window.AT_BASE = AT_BASE;
+    window.AT_CONC = AT_CONC;
+    window.AT_VEILLE = AT_VEILLE;
 
     // ==========================================
     // 2. INITIALIZACIÓN DE VARIABLES GLOBALES
     // ==========================================
-    window.AT_VEILLE = [];
-    window.AT_CONCURRENTS = [];
+    window.AT_VEILLE_DATA = [];
+    window.AT_CONCURRENTS_DATA = [];
     window.allRecords = [];
     window.allCompetitors = [];
 
@@ -155,9 +161,9 @@
       let offset = '';
 
       do {
-        const url = `https://api.airtable.com/v0/${AT_BASE}/${tableId}` + (offset ? `?offset=${offset}` : '');
+        const url = `https://api.airtable.com/v0/${window.AT_BASE}/${tableId}` + (offset ? `?offset=${offset}` : '');
         const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${AT_TOKEN}` }
+          headers: { Authorization: `Bearer ${window.AT_TOKEN}` }
         });
 
         if (!res.ok) {
@@ -176,8 +182,8 @@
     // 4. LÓGICA DE RENDERING
     // ==========================================
     function renderKPIs() {
-      const records = window.AT_VEILLE || [];
-      const competitors = window.AT_CONCURRENTS || [];
+      const records = window.AT_VEILLE_DATA || [];
+      const competitors = window.AT_CONCURRENTS_DATA || [];
 
       const alertasCount = records.filter(r => (r.fields?.Prioridad || '').toLowerCase().includes('alta') || (r.fields?.Alerta === true)).length;
       const senalesCount = records.length;
@@ -194,7 +200,7 @@
 
     function renderGrid() {
       const grid = document.getElementById('recordsGrid');
-      const records = window.AT_VEILLE || [];
+      const records = window.AT_VEILLE_DATA || [];
 
       if (records.length === 0) {
         grid.innerHTML = `<p class="text-xs text-gray-500 col-span-full">No hay registros disponibles.</p>`;
@@ -232,12 +238,12 @@
 
       try {
         const [veilleData, concData] = await Promise.all([
-          atFetchAll(AT_VEILLE),
-          atFetchAll(AT_CONC)
+          atFetchAll(window.AT_VEILLE),
+          atFetchAll(window.AT_CONC)
         ]);
 
-        window.AT_VEILLE = veilleData;
-        window.AT_CONCURRENTS = concData;
+        window.AT_VEILLE_DATA = veilleData;
+        window.AT_CONCURRENTS_DATA = concData;
         window.allRecords = veilleData;
         window.allCompetitors = concData;
 
