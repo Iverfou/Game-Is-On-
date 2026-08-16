@@ -360,22 +360,20 @@
 <script>
 // ── CONFIGURATION ──
 const AT_TOKEN = 'patLcCvV71GyvB4sq.6da2d2692b015ffc03cbdd0bb20b8a01b74bd09c48f78cb41b3d0b513ec36522';
-const AT_BASE  = 'appTrL6dyikqGxZe4';
-const AT_CONC  = 'tblSiGUsTuXpEwioY';
-const AT_VEILLE= 'tbl13Y1eW54aqPTxG';
+const API_VEILLE = '/api/veille';
+const API_CONC   = '/api/concurrents';
 
 let allRecords = [], allCompetitors = [];
 
 // ── FETCH HELPERS ──
-async function atFetch(tableId, params='') {
-  const res = await fetch(
-    `https://api.airtable.com/v0/${AT_BASE}/${tableId}?${params}`,
-    { headers: { Authorization: `Bearer ${AT_TOKEN}` } }
-  );
-  if (!res.ok) throw new Error(`Airtable error ${res.status}`);
+async function apiFetch(endpoint, params='') {
+  const url = new URL(endpoint, window.location.origin);
+  if (params) Object.entries(params).forEach(([k,v]) => url.searchParams.append(k, v));
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`API error ${res.status}`);
   return res.json();
 }
-
+  
 async function fetchAll(tableId, params='') {
   let records = [], offset = null;
   do {
