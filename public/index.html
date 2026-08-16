@@ -556,12 +556,12 @@ function renderPrices() {
 }
 
 // ── REVIEW ANALYSIS ──
+// ── REVIEW ANALYSIS ──
 function renderReviews(records) {
   const currentRecords = records || allRecords || [];
   const withAvis = currentRecords.filter(r => r.fields && r.fields['Avis clients']);
   const withReco = currentRecords.filter(r => r.fields && r.fields['Recommandation action']);
   document.getElementById('reviewCount').textContent = withAvis.length + ' con avis';
-  ...
 
   // Avis clients
   if (withAvis.length) {
@@ -594,7 +594,7 @@ function renderReviews(records) {
     document.getElementById('negReasons').innerHTML = '<div class="empty-state" style="padding:12px">Sin recomendaciones IA esta semana</div>';
   }
 }
-
+  
 // ── INSTAGRAM ──
 function renderInstagram() {
   const withInsta = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']);
