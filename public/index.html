@@ -362,6 +362,10 @@
 const API_VEILLE = '/api/veille';
 const API_CONC   = '/api/concurrents';
 
+// Déclarations des variables globales
+let AT_VEILLE = [];
+let AT_CONCURRENTS = [];
+
 let allRecords = [], allCompetitors = [];
 
 // ── FETCH HELPERS ──
@@ -380,7 +384,6 @@ async function apiFetch(endpoint, params = {}) {
 
 // ── NORMALIZER ──
 function normalizeVeilleRecord(r) {
-  // Les routes retournent des champs normalisés mais gardent aussi les champs bruts
   return {
     id: r.id,
     fields: {
@@ -425,8 +428,10 @@ async function loadAll() {
       apiFetch(API_CONC)
     ]);
 
-    // Normalizar records
+    // Normalizar records et assigner aux variables globales
     allRecords = (veilleData.records || []).map(normalizeVeilleRecord);
+    AT_VEILLE = allRecords;
+
     allCompetitors = (concurrentsData.concurrents || []).map(c => ({
       id: c.id,
       fields: {
@@ -439,6 +444,7 @@ async function loadAll() {
         'Avis Google': ''
       }
     }));
+    AT_CONCURRENTS = allCompetitors;
 
     // Populate semana filter
     const semanas = veilleData.semaines_disponibles || [...new Set(allRecords.map(r => r.fields['Semaine']).filter(Boolean))].sort().reverse();
@@ -464,6 +470,7 @@ function showError(msg) {
 
 // ── FILTERS ──
 function concurrentName(f) {
+  if (!f) return '?';
   const c = f['Concurrent'];
   if (Array.isArray(c)) return c[0] || '?';
   return c || f['Titre']?.split('—')[0]?.trim() || '?';
@@ -503,15 +510,16 @@ function applyFilters() {
 
 // ── KPIs ──
 function offersStudentVisa(f) {
+  if (!f) return false;
   const txt = ((f['Types de services proposés']||'') + ' ' + (f['Spécialisation']||'') + ' ' + (f['Packs & Formules']||'')).toLowerCase();
   return txt.includes('étudiant') || txt.includes('estudiante') || txt.includes('student');
 }
 
 function renderKPIs(records) {
-  const critical   = records.filter(r => r.fields['Score importance'] >= 4).length;
+  const critical   = records.filter(r => r.fields && r.fields['Score importance'] >= 4).length;
   const thisWeek   = records.length;
   const withVisa   = allCompetitors.filter(r => offersStudentVisa(r.fields)).length;
-  const withInsta  = allCompetitors.filter(r => r.fields['Instagram Handle']).length;
+  const withInsta  = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']).length;
 
   document.getElementById('kpiCritical').textContent    = critical;
   document.getElementById('kpiSignals').textContent     = thisWeek;
@@ -533,7 +541,7 @@ function renderPrices() {
   }
 
   const rows = list.map(r => {
-    const f = r.fields;
+    const f = r.fields || {};
     const nombre = f['Nom du cabinet'] || '?';
     const web    = f['Site Web'] ? `<br><a href="${esc(f['Site Web'])}" target="_blank" style="color:var(--blue);font-size:11px">Sitio →</a>` : '';
     const precio = f['Avis Google'] ? `<span class="price-tag">${esc(f['Avis Google'])}</span>` : '<span class="no-price">Sin datos</span>';
@@ -549,8 +557,9 @@ function renderPrices() {
 
 // ── REVIEW ANALYSIS ──
 function renderReviews(records) {
-  const withAvis = records.filter(r => r.fields['Avis clients']);
-  const withReco = records.filter(r => r.fields['Recommandation action']);
+  const currentRecords = records || (typeof AT_VEILLE !== 'undefined' ? AT_VEILLE : []);
+  const withAvis = currentRecords.filter(r => r.fields && r.fields['Avis clients']);
+  const withReco = currentRecords.filter(r => r.fields && r.fields['Recommandation action']);
   document.getElementById('reviewCount').textContent = withAvis.length + ' con avis';
 
   // Avis clients
@@ -587,7 +596,7 @@ function renderReviews(records) {
 
 // ── INSTAGRAM ──
 function renderInstagram() {
-  const withInsta = allCompetitors.filter(r => r.fields['Instagram Handle']);
+  const withInsta = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']);
 
   if (!withInsta.length) {
     document.getElementById('instaList').innerHTML =
@@ -666,7 +675,7 @@ function renderSignals(records) {
   const statusClass = s => s === 'Nuevo' ? 's-new' : s === 'Tratado' ? 's-done' : 's-prog';
 
   const rows = records.map(r => {
-    const f = r.fields;
+    const f = r.fields || {};
     const score  = f['Score importance'] || 0;
     const nom    = concurrentName(f);
     const type   = f['Type de changement'] || '—';
@@ -694,8 +703,8 @@ function renderSignals(records) {
 
 // ── ACTIONS ──
 function renderActions(records) {
-  const critical  = records.filter(r => r.fields['Score importance'] >= 4);
-  const withInsta = allCompetitors.filter(r => r.fields['Instagram Handle']);
+  const critical  = records.filter(r => r.fields && r.fields['Score importance'] >= 4);
+  const withInsta = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']);
   const withVisa  = allCompetitors.filter(r => offersStudentVisa(r.fields));
 
   const actions = [];
@@ -730,11 +739,12 @@ function renderActions(records) {
     });
   }
 
-  // Recommandations IA (Airtable) → actions concrètes par despacho
+  // Recommandations IA (Airtable)
   const withReco = records
-    .filter(r => r.fields['Recommandation action'])
+    .filter(r => r.fields && r.fields['Recommandation action'])
     .sort((a,b) => (b.fields['Score importance']||0) - (a.fields['Score importance']||0))
     .slice(0, 2);
+
   withReco.forEach(r => {
     const f = r.fields;
     actions.push({
