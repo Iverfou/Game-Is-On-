@@ -359,54 +359,98 @@
 
 <script>
 // ── CONFIGURATION ──
-const AT_TOKEN = 'patLcCvV71GyvB4sq.6da2d2692b015ffc03cbdd0bb20b8a01b74bd09c48f78cb41b3d0b513ec36522';
 const API_VEILLE = '/api/veille';
 const API_CONC   = '/api/concurrents';
 
 let allRecords = [], allCompetitors = [];
 
 // ── FETCH HELPERS ──
-async function apiFetch(endpoint, params='') {
+async function apiFetch(endpoint, params = {}) {
   const url = new URL(endpoint, window.location.origin);
-  if (params) Object.entries(params).forEach(([k,v]) => url.searchParams.append(k, v));
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== null && v !== undefined && v !== '') url.searchParams.append(k, v);
+  });
   const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+    throw new Error(err.error || err.details || `API error ${res.status}`);
+  }
   return res.json();
 }
-  
-async function fetchAll(tableId, params='') {
-  let records = [], offset = null;
-  do {
-    const p = offset ? params + `&offset=${offset}` : params;
-    const data = await atFetch(tableId, p);
-    records = records.concat(data.records || []);
-    offset = data.offset;
-  } while (offset);
-  return records;
+
+// ── NORMALIZER ──
+function normalizeVeilleRecord(r) {
+  // Les routes retournent des champs normalisés mais gardent aussi les champs bruts
+  return {
+    id: r.id,
+    fields: {
+      'Titre': r.fields['Titre'] || r.fields.titre || '',
+      'Concurrent': r.fields['Concurrent'] || r.fields.concurrent || '',
+      'Date détection': r.fields['Date détection'] || r.fields.date_detection,
+      'Semaine': r.fields['Semaine'] || r.fields.semaine || '',
+      'Source': r.fields['Source'] || r.fields.source || '',
+      'Type de changement': r.fields['Type de changement'] || r.fields.type_changement || '',
+      'Contenu détecté': r.fields['Contenu détecté'] || r.fields.contenu || '',
+      'Résumé Claude': r.fields['Résumé Claude'] || '',
+      'Recommandation action': r.fields['Recommandation action'] || '',
+      'Avis clients': r.fields['Avis clients'] || r.fields.avis_clients || '',
+      'Lien source': r.fields['Lien source'] || r.fields.lien_source || '',
+      'Score importance': r.fields['Score importance'] || r.fields.score_importance || 0,
+      'Statut': r.fields['Statut'] || r.fields.statut || 'Nuevo'
+    }
+  };
+}
+
+function normalizeConcurrentRecord(c) {
+  return {
+    id: c.id,
+    fields: {
+      'Nom du cabinet': c['Nom du cabinet'] || c.nom || '',
+      'Spécialisation': c['Spécialisation'] || c.secteur || '',
+      'Site Web': c['Site Web'] || c.site_web || '',
+      'Instagram Handle': c['Instagram Handle'] || c.instagram || '',
+      'Facebook URL': c['Facebook URL'] || c.facebook || '',
+      'Types de services proposés': c['Types de services proposés'] || '',
+      'Avis Google': c['Avis Google'] || ''
+    }
+  };
 }
 
 // ── MAIN LOAD ──
 async function loadAll() {
   document.getElementById('lastUpdate').textContent = 'Actualizando...';
   try {
-    const [veille, concurrents] = await Promise.all([
-      fetchAll(AT_VEILLE, 'sort%5B0%5D%5Bfield%5D=Score+importance&sort%5B0%5D%5Bdirection%5D=desc&maxRecords=100'),
-      fetchAll(AT_CONC, 'filterByFormula=%7BActif%7D%3D1')
+    const [veilleData, concurrentsData] = await Promise.all([
+      apiFetch(API_VEILLE, { limit: 100 }),
+      apiFetch(API_CONC)
     ]);
-    allRecords = veille;
-    allCompetitors = concurrents;
+
+    // Normalizar records
+    allRecords = (veilleData.records || []).map(normalizeVeilleRecord);
+    allCompetitors = (concurrentsData.concurrents || []).map(c => ({
+      id: c.id,
+      fields: {
+        'Nom du cabinet': c.nom || '',
+        'Spécialisation': c.secteur || '',
+        'Site Web': c.site_web || '',
+        'Instagram Handle': c.instagram || '',
+        'Facebook URL': c.facebook || '',
+        'Types de services proposés': '',
+        'Avis Google': ''
+      }
+    }));
 
     // Populate semana filter
-    const semanas = [...new Set(veille.map(r => r.fields['Semaine']).filter(Boolean))].sort().reverse();
+    const semanas = veilleData.semaines_disponibles || [...new Set(allRecords.map(r => r.fields['Semaine']).filter(Boolean))].sort().reverse();
     const sel = document.getElementById('filterSemana');
     sel.innerHTML = '<option value="">Todas las semanas</option>' +
       semanas.map(s => `<option value="${s}">${s}</option>`).join('');
 
     applyFilters();
     document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES');
-  } catch(e) {
+  } catch (e) {
     document.getElementById('lastUpdate').textContent = '⚠️ Error de conexión';
-    console.error(e);
+    console.error('loadAll error:', e);
     showError(e.message);
   }
 }
@@ -414,7 +458,7 @@ async function loadAll() {
 function showError(msg) {
   ['priceBody','signalsBody','actionsBody','instaList','visaList','posReasons','negReasons'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.innerHTML = `<div class="error-box">⚠️ ${msg}<br><small>Verifica la conexión con Airtable.</small></div>`;
+    if (el) el.innerHTML = `<div class="error-box">⚠️ ${msg}<br><small>Verifica la configuración de Vercel y que las variables de entorno estén definidas.</small></div>`;
   });
 }
 
@@ -449,10 +493,10 @@ function applyFilters() {
   });
 
   renderKPIs(filtered);
-  renderPrices(filtered);
+  renderPrices();
   renderReviews(filtered);
-  renderInstagram(filtered);
-  renderVisa(filtered);
+  renderInstagram();
+  renderVisa();
   renderSignals(filtered);
   renderActions(filtered);
 }
@@ -492,7 +536,7 @@ function renderPrices() {
     const f = r.fields;
     const nombre = f['Nom du cabinet'] || '?';
     const web    = f['Site Web'] ? `<br><a href="${esc(f['Site Web'])}" target="_blank" style="color:var(--blue);font-size:11px">Sitio →</a>` : '';
-    const precio = f['Prix observés'] ? `<span class="price-tag">${esc(f['Prix observés'])}</span>` : '<span class="no-price">Sur devis / no indicado</span>';
+    const precio = f['Avis Google'] ? `<span class="price-tag">${esc(f['Avis Google'])}</span>` : '<span class="no-price">Sin datos</span>';
     return `<tr>
       <td><strong>${esc(nombre)}</strong>${web}</td>
       <td><small>${esc(f['Spécialisation']||'—')}</small></td>
@@ -556,7 +600,6 @@ function renderInstagram() {
     const handle = f['Instagram Handle'];
     const links = [
       f['Facebook URL'] ? `<a href="${esc(f['Facebook URL'])}" target="_blank" class="insta-link">Facebook</a>` : '',
-      f['LinkedIn URL'] ? `<a href="${esc(f['LinkedIn URL'])}" target="_blank" class="insta-link">LinkedIn</a>` : ''
     ].filter(Boolean).join(' · ');
     return `
     <div class="insta-item">
@@ -565,7 +608,7 @@ function renderInstagram() {
         <div class="insta-handle">@${esc(handle)}</div>
         ${links ? `<div class="insta-status" style="font-size:11px;margin-top:2px">${links}</div>` : ''}
       </div>
-      <a href="${esc(f['Instagram URL']) || 'https://www.instagram.com/'+esc(handle)+'/'}" target="_blank" class="insta-link">Ver perfil →</a>
+      <a href="https://www.instagram.com/${esc(handle)}/" target="_blank" class="insta-link">Ver perfil →</a>
     </div>`;
   }).join('');
 }
@@ -582,7 +625,7 @@ function renderVisa() {
     html += withVisa.map(r => `
       <div class="visa-item visa-yes">
         <div class="visa-label">✅ ${esc(r.fields['Nom du cabinet']||'?')} — Ofrece Visa Estudiante</div>
-        <div class="visa-context">${esc((r.fields['Types de services proposés']||'').slice(0,160))}</div>
+        <div class="visa-context">${esc((r.fields['Spécialización']||'').slice(0,160))}</div>
       </div>
     `).join('');
   }
@@ -614,7 +657,7 @@ function renderVisa() {
 function renderSignals(records) {
   if (!records.length) {
     document.getElementById('signalsBody').innerHTML =
-      '<tr><td colspan="8"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
+      '<tr><td colspan="7"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
     return;
   }
 
