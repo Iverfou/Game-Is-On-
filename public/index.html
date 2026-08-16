@@ -1,792 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ML Lawyers — Vigilancia Competitiva Alicante</title>
-<style>
-  :root {
-    --navy: #0f2342;
-    --blue: #1a4fa0;
-    --accent: #e63946;
-    --gold: #f4a261;
-    --green: #2a9d8f;
-    --light: #f8fafc;
-    --border: #e2e8f0;
-    --text: #1e293b;
-    --muted: #64748b;
-    --card-shadow: 0 2px 12px rgba(0,0,0,.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f1f5f9; color: var(--text); }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 100%);
-    padding: 20px 32px;
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  }
-  .header-left { display: flex; align-items: center; gap: 14px; }
-  .logo { width: 42px; height: 42px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: var(--navy); }
-  .header h1 { color: white; font-size: 18px; font-weight: 700; }
-  .header .sub { color: #94a3b8; font-size: 13px; margin-top: 2px; }
-  .header-right { display: flex; align-items: center; gap: 12px; }
-  .live-badge { background: var(--green); color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: .5px; }
-  .btn { background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.25); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all .2s; }
-  .btn:hover { background: rgba(255,255,255,.25); }
-  .last-update { color: #94a3b8; font-size: 12px; }
-
-  /* FILTERS */
-  .filters { background: white; border-bottom: 1px solid var(--border); padding: 12px 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-  .filter-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
-  select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); background: white; cursor: pointer; }
-  select:focus { outline: none; border-color: var(--blue); }
-
-  /* MAIN */
-  .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
-
-  /* KPI GRID */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .kpi { background: white; border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow); position: relative; overflow: hidden; }
-  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .kpi.red::before { background: var(--accent); }
-  .kpi.blue::before { background: var(--blue); }
-  .kpi.green::before { background: var(--green); }
-  .kpi.gold::before { background: var(--gold); }
-  .kpi.purple::before { background: #7c3aed; }
-  .kpi-icon { font-size: 22px; margin-bottom: 10px; }
-  .kpi-value { font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1; }
-  .kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
-  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
-
-  /* GRID 2 COL */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
-  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
-
-  /* CARDS */
-  .card { background: white; border-radius: 12px; box-shadow: var(--card-shadow); overflow: hidden; }
-  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-title { font-size: 14px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 8px; }
-  .card-badge { font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
-  .badge-red { background: #fee2e2; color: #dc2626; }
-  .badge-green { background: #d1fae5; color: #059669; }
-  .badge-blue { background: #dbeafe; color: #2563eb; }
-  .badge-gold { background: #fef3c7; color: #d97706; }
-  .badge-gray { background: #f1f5f9; color: var(--muted); }
-  .card-body { padding: 16px 20px; }
-
-  /* PRICE TABLE */
-  .price-table { width: 100%; border-collapse: collapse; }
-  .price-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
-  .price-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-  .price-table tr:hover td { background: #f8fafc; }
-  .price-tag { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 12px; }
-  .no-price { color: #94a3b8; font-style: italic; font-size: 12px; }
-  .score-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-  .s4 { background: #dc2626; }
-  .s3 { background: #f59e0b; }
-  .s2 { background: #3b82f6; }
-  .s1 { background: #94a3b8; }
-
-  /* REVIEW ANALYSIS */
-  .review-section { margin-bottom: 14px; }
-  .review-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-  .review-positive .review-section-title { color: var(--green); }
-  .review-negative .review-section-title { color: var(--accent); }
-  .reason-tag { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; margin: 3px; cursor: default; }
-  .reason-tag.pos { background: #d1fae5; color: #065f46; }
-  .reason-tag.neg { background: #fee2e2; color: #991b1b; }
-  .reason-tag .count { background: rgba(0,0,0,.1); padding: 1px 5px; border-radius: 10px; font-size: 10px; font-weight: 700; }
-  .insight-box { background: #f0f9ff; border-left: 3px solid var(--blue); padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 10px; font-size: 13px; color: var(--text); line-height: 1.5; }
-  .insight-box strong { color: var(--blue); }
-
-  /* INSTAGRAM */
-  .insta-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-  .insta-item:last-child { border-bottom: none; }
-  .insta-name { font-size: 13px; font-weight: 600; color: var(--text); }
-  .insta-handle { font-size: 12px; color: #c026d3; }
-  .insta-status { font-size: 12px; }
-  .insta-link { color: var(--blue); text-decoration: none; font-size: 12px; font-weight: 600; }
-  .insta-link:hover { text-decoration: underline; }
-
-  /* VISA SECTION */
-  .visa-item { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
-  .visa-yes { background: #d1fae5; color: #065f46; }
-  .visa-no  { background: #f1f5f9; color: var(--muted); }
-  .visa-label { font-weight: 700; margin-bottom: 4px; }
-  .visa-context { font-size: 12px; opacity: .8; line-height: 1.4; }
-
-  /* SIGNALS TABLE */
-  .signals-table { width: 100%; border-collapse: collapse; }
-  .signals-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap; }
-  .signals-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-  .signals-table tr:hover td { background: #f8fafc; }
-  .contenu-cell { max-width: 280px; font-size: 12px; color: var(--muted); line-height: 1.4; }
-  .type-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .t-price { background: #dbeafe; color: #1d4ed8; }
-  .t-new   { background: #d1fae5; color: #059669; }
-  .t-mod   { background: #fef3c7; color: #d97706; }
-  .t-none  { background: #f1f5f9; color: var(--muted); }
-  .status-chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .s-new  { background: #fee2e2; color: #dc2626; }
-  .s-done { background: #d1fae5; color: #059669; }
-  .s-prog { background: #fef3c7; color: #d97706; }
-
-  /* ACTIONS */
-  .action-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
-  .action-item:last-child { border-bottom: none; }
-  .action-num { width: 28px; height: 28px; border-radius: 50%; background: var(--navy); color: white; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .action-body { flex: 1; }
-  .action-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .action-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .action-meta { display: flex; gap: 8px; margin-top: 8px; }
-  .urgency { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
-  .u-high   { background: #fee2e2; color: #dc2626; }
-  .u-medium { background: #fef3c7; color: #d97706; }
-  .u-low    { background: #d1fae5; color: #059669; }
-
-  /* LOADING / ERROR */
-  .loading-overlay { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .error-box { background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 14px; color: #dc2626; font-size: 13px; }
-
-  /* FULL WIDTH */
-  .full-width { margin-bottom: 24px; }
-
-  .section-sep { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; display: flex; align-items: center; gap: 10px; }
-  .section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Veille & Concurrence</title>
+  <!-- TailWind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-left">
-    <div class="logo">ML</div>
-    <div>
-      <h1>Vigilancia Competitiva — Alicante</h1>
-      <div class="sub">ML Lawyers · Inmigración Económica · Familiar · Estudiantes · Golden Visa</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <span class="live-badge">● LIVE</span>
-    <span class="last-update" id="lastUpdate">Actualizando...</span>
-    <button class="btn" onclick="loadAll()">↻ Actualizar</button>
-  </div>
-</div>
-
-<!-- FILTERS -->
-<div class="filters">
-  <span class="filter-label">Filtrar por:</span>
-  <select id="filterSemana" onchange="applyFilters()">
-    <option value="">Todas las semanas</option>
-  </select>
-  <select id="filterSector" onchange="applyFilters()">
-    <option value="">Todas las áreas</option>
-    <option value="Económica">Inmigración Económica</option>
-    <option value="Golden Visa">Golden Visa / Inversión</option>
-    <option value="Regroupement">Regroupement Familial</option>
-    <option value="Étudiant">Estudiantes</option>
-    <option value="Nationalité">Nacionalidad</option>
-    <option value="Nomade">Nómada Digital</option>
-    <option value="Non Lucratif">No Lucrativo</option>
-  </select>
-  <select id="filterScore" onchange="applyFilters()">
-    <option value="">Todas las prioridades</option>
-    <option value="4">🔴 Crítico (Score 4)</option>
-    <option value="3">🟡 Alto (Score 3)</option>
-    <option value="2">🔵 Medio (Score 2)</option>
-    <option value="1">⚪ Bajo (Score 1)</option>
-  </select>
-  <select id="filterStatus" onchange="applyFilters()">
-    <option value="">Todos los estados</option>
-    <option value="Nuevo">Nuevo</option>
-    <option value="En proceso">En proceso</option>
-    <option value="Tratado">Tratado</option>
-  </select>
-</div>
-
-<div class="main">
-
-  <!-- KPI ROW -->
-  <div class="kpi-grid" id="kpiGrid">
-    <div class="kpi red"><div class="kpi-icon">🚨</div><div class="kpi-value" id="kpiCritical">—</div><div class="kpi-label">Alertas críticas</div><div class="kpi-sub">Precio / Servicio cambiados</div></div>
-    <div class="kpi blue"><div class="kpi-icon">📡</div><div class="kpi-value" id="kpiSignals">—</div><div class="kpi-label">Señales esta semana</div><div class="kpi-sub">Cambios detectados</div></div>
-    <div class="kpi green"><div class="kpi-icon">⚖️</div><div class="kpi-value" id="kpiCompetitors">—</div><div class="kpi-label">Despachos</div><div class="kpi-sub">Competidores monitorizados</div></div>
-    <div class="kpi gold"><div class="kpi-icon">🎓</div><div class="kpi-value" id="kpiVisa">—</div><div class="kpi-label">Ofrecen Visa Estudiante</div><div class="kpi-sub">Vía de regularización clave en Alicante</div></div>
-    <div class="kpi purple"><div class="kpi-icon">📸</div><div class="kpi-value" id="kpiInsta">—</div><div class="kpi-label">Con Instagram</div><div class="kpi-sub">Presencia digital activa</div></div>
-  </div>
-
-  <!-- ROW 1: Precios + Avis -->
-  <div class="grid-2">
-
-    <!-- PRECIOS -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">⚖️ Directorio de Despachos</div>
-        <span class="card-badge badge-blue" id="priceCount">—</span>
-      </div>
-      <div class="card-body" style="padding:0">
-        <table class="price-table" id="priceTable">
-          <thead>
-            <tr>
-              <th>Despacho</th>
-              <th>Especialización</th>
-              <th>Precio observado</th>
-              <th>Valoración</th>
-            </tr>
-          </thead>
-          <tbody id="priceBody">
-            <tr><td colspan="4" class="loading-overlay"><div class="spinner"></div>Cargando...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- AVIS - RAISONS -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">⭐ Análisis de Opiniones</div>
-        <span class="card-badge badge-green" id="reviewCount">—</span>
-      </div>
-      <div class="card-body">
-        <div class="review-section review-positive">
-          <div class="review-section-title">💬 Avis clients detectados</div>
-          <div id="posReasons">
-            <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
-          </div>
-          <div class="insight-box" id="posInsight" style="display:none">
-            <strong>💡 Para ML Lawyers:</strong> <span id="posInsightText"></span>
-          </div>
-        </div>
-        <div class="review-section review-negative" style="margin-top:16px">
-          <div class="review-section-title">🤖 Recomendaciones IA (Claude)</div>
-          <div id="negReasons">
-          </div>
-          <div class="insight-box" id="negInsight" style="display:none; background:#fff5f5; border-color: var(--accent)">
-            <strong>💡 Para ML Lawyers:</strong> <span id="negInsightText"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ROW 2: Instagram + Visa -->
-  <div class="grid-2">
-
-    <!-- INSTAGRAM -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">📸 Redes Sociales de Despachos</div>
-        <span class="card-badge badge-gold">Digital</span>
-      </div>
-      <div class="card-body">
-        <div id="instaList">
-          <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
-        </div>
-        <div class="insight-box" style="margin-top:12px">
-          <strong>💡 Para ML Lawyers:</strong> Los despachos activos en Instagram publican reels explicativos (Golden Visa, NIE, TIE, arraigo). Mantener publicación regular (3-4x/semana) con casos de éxito y FAQ de extranjería para captar clientela internacional.
-        </div>
-      </div>
-    </div>
-
-    <!-- VISA ÉTUDIANT -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">🎓 Visa de Estudios — Competencia</div>
-        <span class="card-badge badge-blue" id="visaBadge">—</span>
-      </div>
-      <div class="card-body">
-        <div id="visaList">
-          <div class="loading-overlay" style="padding:20px"><div class="spinner"></div></div>
-        </div>
-        <div class="insight-box" id="visaInsight" style="margin-top:12px; display:none">
-          <strong>💡 Mercado clave:</strong> <span id="visaInsightText">En Alicante, muchos turistas que quieren quedarse optan por la vía del visado de estudiante por ser la más accesible, pero su complejidad administrativa los lleva a contratar un despacho. ML Lawyers debe posicionarse fuerte en esta línea de negocio de alta demanda.</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- SEÑALES TABLE -->
-  <div class="section-sep">Registro detallado de señales</div>
-  <div class="full-width card">
-    <div class="card-header">
-      <div class="card-title">📋 Todos los cambios detectados</div>
-      <div style="display:flex;gap:8px">
-        <span class="card-badge badge-red" id="totalSignals">—</span>
-        <input type="text" id="searchInput" placeholder="Buscar..." onkeyup="applyFilters()"
-          style="padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;width:160px">
-      </div>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="signals-table">
-        <thead>
-          <tr>
-            <th>P</th>
-            <th>Despacho</th>
-            <th>Tipo</th>
-            <th>Fuente</th>
-            <th>Resumen</th>
-            <th>Estado</th>
-            <th>Semana</th>
-          </tr>
-        </thead>
-        <tbody id="signalsBody">
-          <tr><td colspan="9" class="loading-overlay"><div class="spinner"></div>Cargando datos Airtable...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ACTIONS RECOMMANDÉES -->
-  <div class="section-sep">Acciones recomendadas</div>
-  <div class="full-width card">
-    <div class="card-header">
-      <div class="card-title">🎯 Top acciones para el director</div>
-      <span class="card-badge badge-red">Esta semana</span>
-    </div>
-    <div class="card-body" id="actionsBody">
-      <div class="loading-overlay" style="padding:30px"><div class="spinner"></div>Generando recomendaciones...</div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-// ── CONFIGURATION & VARIABLES GLOBALES ──
-const API_VEILLE = '/api/veille';
-const API_CONC   = '/api/concurrents';
-
-// Déclaration explicite des variables attendues
-var AT_VEILLE = [];
-var AT_CONCURRENTS = [];
-var allRecords = [];
-var allCompetitors = [];
-
-// ── FETCH HELPERS ──
-async function apiFetch(endpoint, params = {}) {
-  const url = new URL(endpoint, window.location.origin);
-  Object.entries(params).forEach(([k, v]) => {
-    if (v !== null && v !== undefined && v !== '') url.searchParams.append(k, v);
-  });
-  const res = await fetch(url.toString());
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-    throw new Error(err.error || err.details || `API error ${res.status}`);
-  }
-  return res.json();
-}
-
-// ── NORMALIZER ──
-function normalizeVeilleRecord(r) {
-  return {
-    id: r.id,
-    fields: {
-      'Titre': r.fields['Titre'] || r.fields.titre || '',
-      'Concurrent': r.fields['Concurrent'] || r.fields.concurrent || '',
-      'Date détection': r.fields['Date détection'] || r.fields.date_detection,
-      'Semaine': r.fields['Semaine'] || r.fields.semaine || '',
-      'Source': r.fields['Source'] || r.fields.source || '',
-      'Type de changement': r.fields['Type de changement'] || r.fields.type_changement || '',
-      'Contenu détecté': r.fields['Contenu détecté'] || r.fields.contenu || '',
-      'Résumé Claude': r.fields['Résumé Claude'] || '',
-      'Recommandation action': r.fields['Recommandation action'] || '',
-      'Avis clients': r.fields['Avis clients'] || r.fields.avis_clients || '',
-      'Lien source': r.fields['Lien source'] || r.fields.lien_source || '',
-      'Score importance': r.fields['Score importance'] || r.fields.score_importance || 0,
-      'Statut': r.fields['Statut'] || r.fields.statut || 'Nuevo'
-    }
-  };
-}
-
-function normalizeConcurrentRecord(c) {
-  return {
-    id: c.id,
-    fields: {
-      'Nom du cabinet': c['Nom du cabinet'] || c.nom || '',
-      'Spécialisation': c['Spécialisation'] || c.secteur || '',
-      'Site Web': c['Site Web'] || c.site_web || '',
-      'Instagram Handle': c['Instagram Handle'] || c.instagram || '',
-      'Facebook URL': c['Facebook URL'] || c.facebook || '',
-      'Types de services proposés': c['Types de services proposés'] || '',
-      'Avis Google': c['Avis Google'] || ''
-    }
-  };
-}
-
-// ── MAIN LOAD ──
-async function loadAll() {
-  document.getElementById('lastUpdate').textContent = 'Actualizando...';
-  try {
-    const [veilleData, concurrentsData] = await Promise.all([
-      apiFetch(API_VEILLE, { limit: 100 }),
-      apiFetch(API_CONC)
-    ]);
-
-    // Normalizar records et assigner aux variables globales
-    allRecords = (veilleData.records || []).map(normalizeVeilleRecord);
-    AT_VEILLE = allRecords;
-
-    allCompetitors = (concurrentsData.concurrents || []).map(c => ({
-      id: c.id,
-      fields: {
-        'Nom du cabinet': c.nom || '',
-        'Spécialisation': c.secteur || '',
-        'Site Web': c.site_web || '',
-        'Instagram Handle': c.instagram || '',
-        'Facebook URL': c.facebook || '',
-        'Types de services proposés': '',
-        'Avis Google': ''
-      }
-    }));
-    AT_CONCURRENTS = allCompetitors;
-
-    // Populate semana filter
-    const semanas = veilleData.semaines_disponibles || [...new Set(allRecords.map(r => r.fields['Semaine']).filter(Boolean))].sort().reverse();
-    const sel = document.getElementById('filterSemana');
-    sel.innerHTML = '<option value="">Todas las semanas</option>' +
-      semanas.map(s => `<option value="${s}">${s}</option>`).join('');
-
-    applyFilters();
-    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES');
-  } catch (e) {
-    document.getElementById('lastUpdate').textContent = '⚠️ Error de conexión';
-    console.error('loadAll error:', e);
-    showError(e.message);
-  }
-}
-
-function showError(msg) {
-  ['priceBody','signalsBody','actionsBody','instaList','visaList','posReasons','negReasons'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = `<div class="error-box">⚠️ ${msg}<br><small>Verifica la configuración de Vercel y que las variables de entorno estén definidas.</small></div>`;
-  });
-}
-
-// ── FILTERS ──
-function concurrentName(f) {
-  if (!f) return '?';
-  const c = f['Concurrent'];
-  if (Array.isArray(c)) return c[0] || '?';
-  return c || f['Titre']?.split('—')[0]?.trim() || '?';
-}
-
-function applyFilters() {
-  const semana  = document.getElementById('filterSemana').value;
-  const sector  = document.getElementById('filterSector').value;
-  const score   = document.getElementById('filterScore').value;
-  const status  = document.getElementById('filterStatus').value;
-  const search  = (document.getElementById('searchInput').value || '').toLowerCase();
-
-  const filtered = allRecords.filter(r => {
-    const f = r.fields;
-    if (semana && f['Semaine'] !== semana) return false;
-    if (sector) {
-      const hayCampos = ((f['Contenu détecté']||'') + ' ' + (f['Résumé Claude']||'') + ' ' + (f['Titre']||'')).toLowerCase();
-      if (!hayCampos.includes(sector.toLowerCase())) return false;
-    }
-    if (score  && String(f['Score importance']) !== score) return false;
-    if (status && f['Statut'] !== status) return false;
-    if (search) {
-      const hay = ((f['Titre']||'') + (f['Contenu détecté']||'') + (f['Résumé Claude']||'') + (f['Type de changement']||'') + concurrentName(f)).toLowerCase();
-      if (!hay.includes(search)) return false;
-    }
-    return true;
-  });
-
-  renderKPIs(filtered);
-  renderPrices();
-  renderReviews(filtered);
-  renderInstagram();
-  renderVisa();
-  renderSignals(filtered);
-  renderActions(filtered);
-}
-
-// ── KPIs ──
-function offersStudentVisa(f) {
-  if (!f) return false;
-  const txt = ((f['Types de services proposés']||'') + ' ' + (f['Spécialisation']||'') + ' ' + (f['Packs & Formules']||'')).toLowerCase();
-  return txt.includes('étudiant') || txt.includes('estudiante') || txt.includes('student');
-}
-
-function renderKPIs(records) {
-  const critical   = records.filter(r => r.fields && r.fields['Score importance'] >= 4).length;
-  const thisWeek   = records.length;
-  const withVisa   = allCompetitors.filter(r => offersStudentVisa(r.fields)).length;
-  const withInsta  = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']).length;
-
-  document.getElementById('kpiCritical').textContent    = critical;
-  document.getElementById('kpiSignals').textContent     = thisWeek;
-  document.getElementById('kpiCompetitors').textContent = allCompetitors.length;
-  document.getElementById('kpiVisa').textContent        = withVisa;
-  document.getElementById('kpiInsta').textContent       = withInsta;
-  document.getElementById('totalSignals').textContent   = thisWeek + ' señales';
-}
-
-// ── PRICES TABLE ──
-function renderPrices() {
-  const list = allCompetitors;
-  document.getElementById('priceCount').textContent = list.length + ' despachos';
-
-  if (!list.length) {
-    document.getElementById('priceBody').innerHTML =
-      `<tr><td colspan="4"><div class="empty-state"><div class="icon">⚖️</div>No hay despachos activos en el directorio.</div></td></tr>`;
-    return;
-  }
-
-  const rows = list.map(r => {
-    const f = r.fields || {};
-    const nombre = f['Nom du cabinet'] || '?';
-    const web    = f['Site Web'] ? `<br><a href="${esc(f['Site Web'])}" target="_blank" style="color:var(--blue);font-size:11px">Sitio →</a>` : '';
-    const precio = f['Avis Google'] ? `<span class="price-tag">${esc(f['Avis Google'])}</span>` : '<span class="no-price">Sin datos</span>';
-    return `<tr>
-      <td><strong>${esc(nombre)}</strong>${web}</td>
-      <td><small>${esc(f['Spécialisation']||'—')}</small></td>
-      <td>${precio}</td>
-      <td><small>${esc(f['Avis Google']||'—')}</small></td>
-    </tr>`;
-  });
-  document.getElementById('priceBody').innerHTML = rows.join('');
-}
-
-// ── REVIEW ANALYSIS ──
-// ── REVIEW ANALYSIS ──
-function renderReviews(records) {
-  const currentRecords = records || allRecords || [];
-  const withAvis = currentRecords.filter(r => r.fields && r.fields['Avis clients']);
-  const withReco = currentRecords.filter(r => r.fields && r.fields['Recommandation action']);
-  document.getElementById('reviewCount').textContent = withAvis.length + ' con avis';
-
-  // Avis clients
-  if (withAvis.length) {
-    document.getElementById('posReasons').innerHTML = withAvis.slice(0, 8).map(r => {
-      const f = r.fields;
-      const txt = (f['Avis clients']||'').slice(0,180) + ((f['Avis clients']||'').length > 180 ? '…' : '');
-      return `<div class="reason-tag pos" style="display:block;white-space:normal;line-height:1.4;margin:6px 0">
-        <strong>${esc(concurrentName(f))}</strong> — ${esc(txt)}
-      </div>`;
-    }).join('');
-    document.getElementById('posInsight').style.display = 'block';
-    document.getElementById('posInsightText').textContent =
-      `${withAvis.length} avis de clientes detectados esta semana en la competencia. Revisar tendencias recurrentes para ajustar el argumentario de ML Lawyers.`;
-  } else {
-    document.getElementById('posReasons').innerHTML = '<div class="empty-state" style="padding:12px">No se detectaron avis clientes esta semana</div>';
-  }
-
-  // Recomendaciones IA
-  if (withReco.length) {
-    const sorted = [...withReco].sort((a,b) => (b.fields['Score importance']||0) - (a.fields['Score importance']||0));
-    document.getElementById('negReasons').innerHTML = sorted.slice(0, 8).map(r => {
-      const f = r.fields;
-      const txt = (f['Recommandation action']||'').slice(0,180) + ((f['Recommandation action']||'').length > 180 ? '…' : '');
-      return `<div class="reason-tag neg" style="display:block;white-space:normal;line-height:1.4;margin:6px 0">
-        <strong>${esc(concurrentName(f))}</strong> — ${esc(txt)}
-      </div>`;
-    }).join('');
-    document.getElementById('negInsight').style.display = 'none';
-  } else {
-    document.getElementById('negReasons').innerHTML = '<div class="empty-state" style="padding:12px">Sin recomendaciones IA esta semana</div>';
-  }
-}
-  
-// ── INSTAGRAM ──
-function renderInstagram() {
-  const withInsta = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']);
-
-  if (!withInsta.length) {
-    document.getElementById('instaList').innerHTML =
-      `<div class="empty-state"><div class="icon">📸</div>Ningún despacho con Instagram detectado</div>`;
-    return;
-  }
-
-  document.getElementById('instaList').innerHTML = withInsta.map(r => {
-    const f = r.fields;
-    const handle = f['Instagram Handle'];
-    const links = [
-      f['Facebook URL'] ? `<a href="${esc(f['Facebook URL'])}" target="_blank" class="insta-link">Facebook</a>` : '',
-    ].filter(Boolean).join(' · ');
-    return `
-    <div class="insta-item">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
       <div>
-        <div class="insta-name">${esc(f['Nom du cabinet']||handle)}</div>
-        <div class="insta-handle">@${esc(handle)}</div>
-        ${links ? `<div class="insta-status" style="font-size:11px;margin-top:2px">${links}</div>` : ''}
+        <h1 class="text-xl font-bold text-gray-900">Dashboard Veille & Concurrence</h1>
+        <p class="text-xs text-gray-500" id="lastUpdate">Dernière mise à jour : --</p>
       </div>
-      <a href="https://www.instagram.com/${esc(handle)}/" target="_blank" class="insta-link">Ver perfil →</a>
-    </div>`;
-  }).join('');
-}
-
-// ── VISA ──
-function renderVisa() {
-  const withVisa = allCompetitors.filter(r => offersStudentVisa(r.fields));
-  const without  = allCompetitors.filter(r => !offersStudentVisa(r.fields));
-
-  document.getElementById('visaBadge').textContent = withVisa.length + '/' + allCompetitors.length + ' la ofrecen';
-
-  let html = '';
-  if (withVisa.length) {
-    html += withVisa.map(r => `
-      <div class="visa-item visa-yes">
-        <div class="visa-label">✅ ${esc(r.fields['Nom du cabinet']||'?')} — Ofrece Visa Estudiante</div>
-        <div class="visa-context">${esc((r.fields['Spécialización']||'').slice(0,160))}</div>
-      </div>
-    `).join('');
-  }
-  if (without.length) {
-    const names = without.map(r => r.fields['Nom du cabinet']).filter(Boolean).slice(0,5);
-    html += `<div class="visa-item visa-no"><div class="visa-label">➖ No la ofrecen explícitamente: ${names.map(esc).join(', ')}</div></div>`;
-  }
-  if (!html) html = '<div class="empty-state" style="padding:12px">Sin datos suficientes</div>';
-
-  document.getElementById('visaList').innerHTML = html;
-
-  // Insight
-  const ins = document.getElementById('visaInsight');
-  ins.style.display = 'block';
-  const ratio = allCompetitors.length ? withVisa.length / allCompetitors.length : 0;
-  if (ratio >= 0.5) {
-    document.getElementById('visaInsightText').textContent =
-      `${withVisa.length} de ${allCompetitors.length} despachos ya ofrecen la Visa Estudiante, la vía más usada por turistas que quieren regularizarse en Alicante. ML Lawyers debe diferenciarse por rapidez de gestión, tasa de éxito e idiomas.`;
-  } else if (withVisa.length > 0) {
-    document.getElementById('visaInsightText').textContent =
-      `Solo ${withVisa.length} despacho(s) ofrecen explícitamente la Visa Estudiante, pese a ser una vía de regularización muy demandada en Alicante. Margen para que ML Lawyers refuerce su posicionamiento en esta línea.`;
-  } else {
-    document.getElementById('visaInsightText').textContent =
-      'Ningún competidor detectado promociona explícitamente la Visa Estudiante. Oportunidad clara de posicionamiento para ML Lawyers en esta vía de regularización de alta demanda.';
-  }
-}
-
-// ── SIGNALS TABLE ──
-function renderSignals(records) {
-  if (!records.length) {
-    document.getElementById('signalsBody').innerHTML =
-      '<tr><td colspan="7"><div class="empty-state"><div class="icon">📋</div>No hay señales con los filtros actuales</div></td></tr>';
-    return;
-  }
-
-  const scoreClass = s => s >= 4 ? 's4' : s >= 3 ? 's3' : s >= 2 ? 's2' : 's1';
-  const typeClass  = t => t?.includes('precio') ? 't-price' : t?.includes('Nuevo') ? 't-new' : t?.includes('Modif') ? 't-mod' : 't-none';
-  const statusClass = s => s === 'Nuevo' ? 's-new' : s === 'Tratado' ? 's-done' : 's-prog';
-
-  const rows = records.map(r => {
-    const f = r.fields || {};
-    const score  = f['Score importance'] || 0;
-    const nom    = concurrentName(f);
-    const type   = f['Type de changement'] || '—';
-    const fuente = f['Source'] || '—';
-    const resumen = (f['Résumé Claude'] || f['Contenu détecté'] || '').replace(/\n/g,' ').slice(0,140);
-    const resumenFull = f['Résumé Claude'] || f['Contenu détecté'] || '';
-    const resumenTxt = resumen + (resumenFull.length > 140 ? '...' : '');
-    const statut = f['Statut'] || 'Nuevo';
-    const semana = f['Semaine'] || '—';
-    const link   = f['Lien source'] ? `<a href="${esc(f['Lien source'])}" target="_blank" style="color:var(--blue);font-size:11px">Ver →</a>` : '';
-
-    return `<tr>
-      <td><span class="score-dot ${scoreClass(score)}"></span>${score}</td>
-      <td><strong>${esc(nom)}</strong>${link ? '<br>' + link : ''}</td>
-      <td><span class="type-chip ${typeClass(type)}">${esc(type)}</span></td>
-      <td style="font-size:12px">${esc(fuente)}</td>
-      <td class="contenu-cell">${esc(resumenTxt)}</td>
-      <td><span class="status-chip ${statusClass(statut)}">${esc(statut)}</span></td>
-      <td style="font-size:12px;white-space:nowrap">${esc(semana)}</td>
-    </tr>`;
-  });
-
-  document.getElementById('signalsBody').innerHTML = rows.join('');
-}
-
-// ── ACTIONS ──
-function renderActions(records) {
-  const critical  = records.filter(r => r.fields && r.fields['Score importance'] >= 4);
-  const withInsta = allCompetitors.filter(r => r.fields && r.fields['Instagram Handle']);
-  const withVisa  = allCompetitors.filter(r => offersStudentVisa(r.fields));
-
-  const actions = [];
-
-  if (critical.length) {
-    actions.push({
-      num: 1, urgency: 'Alta', tag: 'u-high',
-      title: `⚠️ Verificar ${critical.length} alerta(s) de precio/servicio`,
-      desc: `Despachos con cambios críticos: ${critical.map(r => concurrentName(r.fields)).join(', ')}. Revisar si ML Lawyers debe ajustar sus honorarios o argumentario comercial.`
-    });
-  }
-
-  if (withVisa.length === 0) {
-    actions.push({
-      num: actions.length + 1, urgency: 'Alta', tag: 'u-high',
-      title: '🎓 Crear página dedicada a Visa Estudiante',
-      desc: 'Ningún competidor detectado promociona explícitamente la Visa Estudiante, pese a ser la vía más usada en Alicante por quienes quieren regularizarse. ML Lawyers puede posicionarse como referente en esta gestión. Publicar landing page específica esta semana.'
-    });
-  } else {
-    actions.push({
-      num: actions.length + 1, urgency: 'Alta', tag: 'u-high',
-      title: '🎓 Reforzar posicionamiento en Visa Estudiante',
-      desc: `${withVisa.length} despacho(s) ya ofrecen la Visa Estudiante, mercado clave en Alicante (turistas buscando regularizarse). ML Lawyers debe destacar rapidez de gestión, tasa de éxito e idiomas hablados frente a la competencia.`
-    });
-  }
-
-  if (withInsta.length > 0) {
-    actions.push({
-      num: actions.length + 1, urgency: 'Media', tag: 'u-medium',
-      title: '📸 Reforzar presencia Instagram',
-      desc: `${withInsta.length} despacho(s) tienen Instagram activo. Publicar 3-4 veces/semana: casos de éxito, reels explicativos (Golden Visa, NIE, TIE, arraigo), testimonios de clientes internacionales.`
-    });
-  }
-
-  // Recommandations IA (Airtable)
-  const withReco = records
-    .filter(r => r.fields && r.fields['Recommandation action'])
-    .sort((a,b) => (b.fields['Score importance']||0) - (a.fields['Score importance']||0))
-    .slice(0, 2);
-
-  withReco.forEach(r => {
-    const f = r.fields;
-    actions.push({
-      num: actions.length + 1,
-      urgency: (f['Score importance']||0) >= 4 ? 'Alta' : (f['Score importance']||0) >= 3 ? 'Media' : 'Baja',
-      tag: (f['Score importance']||0) >= 4 ? 'u-high' : (f['Score importance']||0) >= 3 ? 'u-medium' : 'u-low',
-      title: `🤖 ${esc(concurrentName(f))}`,
-      desc: f['Recommandation action']
-    });
-  });
-
-  if (!actions.length) {
-    actions.push({
-      num: 1, urgency: 'Baja', tag: 'u-low',
-      title: '✅ Semana sin alertas críticas',
-      desc: 'No se detectaron cambios críticos esta semana. Aprovechar para revisar el posicionamiento general y preparar contenido de comunicación.'
-    });
-  }
-
-  document.getElementById('actionsBody').innerHTML = actions.map(a => `
-    <div class="action-item">
-      <div class="action-num">${a.num}</div>
-      <div class="action-body">
-        <div class="action-title">${a.title}</div>
-        <div class="action-desc">${a.desc}</div>
-        <div class="action-meta">
-          <span class="urgency ${a.tag}">Urgencia: ${a.urgency}</span>
-        </div>
-      </div>
+      <button onclick="loadAll()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
+        Actualiser
+      </button>
     </div>
-  `).join('');
-}
+  </header>
 
-// ── HELPERS ──
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Message d'erreur -->
+    <div id="errorMessage" class="hidden mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md"></div>
 
-// ── INIT ──
-loadAll();
-</script>
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" id="kpiContainer">
+      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-gray-500 uppercase">Total Publications</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="kpiTotal">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-gray-500 uppercase">Avis Positifs</p>
+        <p class="text-2xl font-bold text-green-600 mt-1" id="kpiPositive">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-gray-500 uppercase">Avis Négatifs</p>
+        <p class="text-2xl font-bold text-red-600 mt-1" id="kpiNegative">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-gray-500 uppercase">Concurrents suivis</p>
+        <p class="text-2xl font-bold text-blue-600 mt-1" id="kpiCompetitors">0</p>
+      </div>
+    </section>
+
+    <!-- Liste / Feed -->
+    <section class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Dernières Publications & Avis</h2>
+      <div id="reviewsContainer" class="space-y-4">
+        <p class="text-sm text-gray-500">Chargement des données...</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. DÉCLARATION DES CONSTANTES AIRTABLE
+    // ==========================================
+    // Replacez par votre Token Airtable personnel
+    const AT_TOKEN  = 'pat5S9nXdMMEYg4tg.9b5dc037ac95cfd149e3ab191c9c797b770c2d0397bdc21174a543b84e567926'; 
+    const AT_BASE   = 'appTrL6dyikqGxZe4';
+    const AT_CONC   = 'tblSiGUsTuXpEwioY'; // Table Concurrents
+    const AT_VEILLE = 'tbl13Y1eW54aqPTxG'; // Table Veille / Publications
+
+    // ==========================================
+    // 2. DÉCLARATION DES VARIABLES GLOBALES
+    // ==========================================
+    window.AT_VEILLE = [];
+    window.AT_CONCURRENTS = [];
+    window.allRecords = [];
+    window.allCompetitors = [];
+
+    // ==========================================
+    // 3. FONCTIONS D'APPEL AIRTABLE (FETCH)
+    // ==========================================
+    async function atFetchAll(tableId) {
+      let records = [];
+      let offset = '';
+
+      do {
+        const url = `https://api.airtable.com/v0/${AT_BASE}/${tableId}` + (offset ? `?offset=${offset}` : '');
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${AT_TOKEN}` }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Erreur Airtable (${tableId}): ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        records = records.concat(data.records || []);
+        offset = data.offset;
+      } while (offset);
+
+      return records;
+    }
+
+    // ==========================================
+    // 4. RENDU & INITIALISATION
+    // ==========================================
+    function showError(msg) {
+      const errEl = document.getElementById('errorMessage');
+      errEl.textContent = msg;
+      errEl.classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('errorMessage').classList.add('hidden');
+    }
+
+    function renderKPIs() {
+      document.getElementById('kpiTotal').textContent = allRecords.length;
+      document.getElementById('kpiCompetitors').textContent = allCompetitors.length;
+
+      const positiveCount = allRecords.filter(r => (r.fields.Sentiment || '').toLowerCase() === 'positif').length;
+      const negativeCount = allRecords.filter(r => (r.fields.Sentiment || '').toLowerCase() === 'négatif').length;
+
+      document.getElementById('kpiPositive').textContent = positiveCount;
+      document.getElementById('kpiNegative').textContent = negativeCount;
+    }
+
+    function renderReviews() {
+      const container = document.getElementById('reviewsContainer');
+      if (!allRecords.length) {
+        container.innerHTML = `<p class="text-sm text-gray-500">Aucun enregistrement trouvé.</p>`;
+        return;
+      }
+
+      container.innerHTML = allRecords.map(r => {
+        const fields = r.fields || {};
+        const title = fields.Titre || fields.Nom || 'Sans titre';
+        const content = fields.Contenu || fields.Texte || fields.Notes || '';
+        const date = fields.Date ? new Date(fields.Date).toLocaleDateString('fr-FR') : 'Date inconnue';
+
+        return `
+          <div class="p-4 border border-gray-100 bg-gray-50 rounded-md">
+            <div class="flex justify-between items-start mb-1">
+              <h3 class="text-sm font-semibold text-gray-800">${title}</h3>
+              <span class="text-xs text-gray-400">${date}</span>
+            </div>
+            <p class="text-sm text-gray-600">${content}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadAll() {
+      hideError();
+      document.getElementById('lastUpdate').textContent = 'Actualisation en cours...';
+
+      try {
+        // Chargement parallèle des deux tables
+        const [veilleRecords, competitorRecords] = await Promise.all([
+          atFetchAll(AT_VEILLE),
+          atFetchAll(AT_CONC)
+        ]);
+
+        // Stockage dans les variables globales
+        allRecords = veilleRecords;
+        allCompetitors = competitorRecords;
+
+        window.AT_VEILLE = veilleRecords;
+        window.AT_CONCURRENTS = competitorRecords;
+
+        // Mise à jour de l'affichage
+        renderKPIs();
+        renderReviews();
+
+        document.getElementById('lastUpdate').textContent = `Dernière mise à jour : ${new Date().toLocaleTimeString('fr-FR')}`;
+      } catch (err) {
+        console.error('Erreur lors du chargement :', err);
+        showError(err.message);
+        document.getElementById('lastUpdate').textContent = 'Erreur lors de la mise à jour';
+      }
+    }
+
+    // Lancement au chargement de la page
+    window.addEventListener('DOMContentLoaded', loadAll);
+  </script>
 </body>
 </html>
